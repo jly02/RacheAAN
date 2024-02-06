@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.13)
 
 set(CMAKE_TOOLCHAIN_FILE ${CMAKE_CURRENT_LIST_DIR}/vcpkg/scripts/buildsystems/vcpkg.cmake)
 
-project(SEALExamples VERSION 4.1.1 LANGUAGES CXX)
+project(RacheCKKS VERSION 0.0.1 LANGUAGES CXX)
 
 # If not called from root CMakeLists.txt
 if(NOT DEFINED SEAL_BUILD_EXAMPLES)
