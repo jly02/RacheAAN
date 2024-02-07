@@ -41,40 +41,78 @@ int main()
 
     // encoder for ckks scheme
     CKKSEncoder encoder(context);
-    
-    // poly_modulus_degree / 2, # of slots, each slot encodes a single real/complex number
-    size_t slot_count = encoder.slot_count();
 
-    // this gets implicitly padded with 0's to poly_modulus_degree / 2 when encoding
-    vector<double> input{ 1.0, 2.0, 4.0, 8.0 };
+    Plaintext plain;
+    Ciphertext cipher;
+    auto start = chrono::high_resolution_clock::now();
+    // encode and encrypt small batch of numbers
+    for (int i = 1; i <= 5; i ++) {
+        encoder.encode((double) i, scale, plain);
+        encryptor.encrypt(plain, cipher);
+    }
+    // timing this small test
+    auto stop = chrono::high_resolution_clock::now();
+    auto duration = chrono::duration_cast<chrono::milliseconds>(stop - start);
+    cout << "Encryption of 5 numbers in CKKS took " << duration.count() << " milliseconds." << endl;
 
-    // make a Plaintext object for your input
-    Plaintext plain_radices, plain_add1;
-    encoder.encode(input, scale, plain_radices);
-    encoder.encode(1.0, scale, plain_add1);
 
-    // and a Ciphertext object holds the encrypted values
-    Ciphertext enc_radices, enc_add1;
-    encryptor.encrypt(plain_radices, enc_radices);
-    encryptor.encrypt(plain_add1, enc_add1);
-
-    // then we evaluate each of { 1.0, 2.0, 3.0, 4.0 } + 1.0, store in another ciphertext
-    Ciphertext enc_result;
-    evaluator.add(enc_radices, enc_add1, enc_result);
-
-    // and decrypt using decryptor object
-    Plaintext plain_result;
-    decryptor.decrypt(enc_result, plain_result);
-
-    // decoding back into normal
-    vector<double> result;
-    encoder.decode(plain_result, result);
-
-    // print result
-    for (auto i = 0; i < 4; i++) {
-        cout << result.at(i) << ' ';
+    vector<Ciphertext> ctxt;
+    // encrypt small powers of 2
+    for (int i = 0; i < 3; i++) {
+        Plaintext radix_plain;
+        encoder.encode(pow(2, i), scale, radix_plain);
+        Ciphertext radix_cipher;
+        encryptor.encrypt(radix_plain, radix_cipher);
+        ctxt.push_back(radix_cipher);
     }
 
-    cout << endl;
+    // ensure encryption was correctly handled
+    for (int i = 0; i < 3; i++) {
+        Plaintext plain_result;
+        decryptor.decrypt(ctxt.at(i), plain_result);
+        vector<double> result;
+        encoder.decode(plain_result, result);
+        cout << result.at(0) << endl;
+    }
+
+    // Manually construct some numbers [5, 4, 3, 2, 1]
+    vector<Ciphertext> ctxt_constructed;
+    Ciphertext constructed;
+
+    start = chrono::high_resolution_clock::now();
+
+    evaluator.add(ctxt.at(2), ctxt.at(0), constructed);
+    ctxt_constructed.push_back(constructed);
+
+    evaluator.add(ctxt.at(1), ctxt.at(1), constructed);
+    ctxt_constructed.push_back(constructed);
+
+    evaluator.add(ctxt.at(1), ctxt.at(0), constructed);
+    ctxt_constructed.push_back(constructed);
+
+    evaluator.add(ctxt.at(0), ctxt.at(0), constructed);
+    ctxt_constructed.push_back(constructed);
+
+    evaluator.add(ctxt.at(0), ctxt.at(0), constructed);
+    evaluator.sub_inplace(constructed, ctxt.at(0));
+    ctxt_constructed.push_back(constructed);
+
+    cout << "First radix cipher scale: " << log2(ctxt.at(2).scale()) << " bits." << endl;
+    cout << "Constructed cipher scale: " << log2(constructed.scale()) << " bits." << endl;
+
+    stop = chrono::high_resolution_clock::now();
+    duration = chrono::duration_cast<chrono::milliseconds>(stop - start);
+    cout << "Encryption of 5 numbers with radix addition took " << duration.count() << " milliseconds." << endl;
+
+    // ensure encryption was correctly handled
+    for (int i = 0; i < 5; i++) {
+        Plaintext plain_result;
+        decryptor.decrypt(ctxt_constructed.at(i), plain_result);
+        vector<double> result;
+        encoder.decode(plain_result, result);
+        cout << result.at(0) << endl;
+    }
+
     return 0;
 }
+
