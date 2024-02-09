@@ -41,6 +41,6 @@ CMakeFiles/
 bin/
 
 # cmake build stuff
-/cmake_install.cmake
-/CMakeCache.txt
-/Makefile
+src/cmake_install.cmake
+src/CMakeCache.txt
+src/Makefile
