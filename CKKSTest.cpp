@@ -29,11 +29,15 @@ int main()
     SecretKey secret_key = keygen.secret_key();
     PublicKey public_key;
     keygen.create_public_key(public_key);
+
+    // not necessary right now 
+    /*
     RelinKeys relin_keys;
     keygen.create_relin_keys(relin_keys);
     GaloisKeys gal_keys;
     keygen.create_galois_keys(gal_keys);
-
+    */
+   
     // encryptor, evalutator, and decryptor
     Encryptor encryptor(context, public_key);
     Evaluator evaluator(context);
@@ -72,8 +76,10 @@ int main()
         decryptor.decrypt(ctxt.at(i), plain_result);
         vector<double> result;
         encoder.decode(plain_result, result);
-        cout << result.at(0) << endl;
+        cout << result.at(0) << " ";
     }
+
+    cout << endl;
 
     // Manually construct some numbers [5, 4, 3, 2, 1]
     vector<Ciphertext> ctxt_constructed;
@@ -110,8 +116,26 @@ int main()
         decryptor.decrypt(ctxt_constructed.at(i), plain_result);
         vector<double> result;
         encoder.decode(plain_result, result);
-        cout << result.at(0) << endl;
+        cout << result.at(0) << " ";
     }
+
+    cout << endl;
+
+    // performing many additions to test scaling
+    Plaintext scale_test_ptxt;
+    encoder.encode(200.505, scale, scale_test_ptxt);
+    Ciphertext scale_test_ctxt;
+    encryptor.encrypt(scale_test_ptxt, scale_test_ctxt);
+    cout << "Scale test initial: " << log2(scale_test_ctxt.scale()) << " bits." << endl;
+    for (int i = 0; i < 1000; i++) {
+        evaluator.add_inplace(scale_test_ctxt, ctxt.at(0));
+    }
+
+    cout << "Scale test after 1000 additions: " << log2(scale_test_ctxt.scale()) << " bits." << endl;
+    decryptor.decrypt(scale_test_ctxt, scale_test_ptxt);
+    vector<double> scale_test_dec;
+    encoder.decode(scale_test_ptxt, scale_test_dec);
+    cout << "Decoding scale test: " << scale_test_dec.at(0) << endl;
 
     return 0;
 }
