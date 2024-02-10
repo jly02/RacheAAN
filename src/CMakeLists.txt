@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.13)
 
 set(CMAKE_TOOLCHAIN_FILE ${CMAKE_CURRENT_LIST_DIR}/vcpkg/scripts/buildsystems/vcpkg.cmake)
 
-project(RacheCKKS VERSION 0.0.1 LANGUAGES CXX)
+project(RacheAAN VERSION 0.0.1 LANGUAGES CXX)
 
 # If not called from root CMakeLists.txt
 if(NOT DEFINED SEAL_BUILD_EXAMPLES)
@@ -15,14 +15,14 @@ if(NOT DEFINED SEAL_BUILD_EXAMPLES)
 endif()
 
 if(SEAL_BUILD_EXAMPLES)
-    add_executable(RacheCKKS)
+    add_executable(RacheAAN)
 
-    target_sources(RacheCKKS PRIVATE CKKSTest.cpp)
+    target_sources(RacheAAN PRIVATE CKKSTest.cpp)
 
     if(TARGET SEAL::seal)
-        target_link_libraries(RacheCKKS PRIVATE SEAL::seal)
+        target_link_libraries(RacheAAN PRIVATE SEAL::seal)
     elseif(TARGET SEAL::seal_shared)
-        target_link_libraries(RacheCKKS PRIVATE SEAL::seal_shared)
+        target_link_libraries(RacheAAN PRIVATE SEAL::seal_shared)
     else()
         message(FATAL_ERROR "Cannot find target SEAL::seal or SEAL::seal_shared")
     endif()
