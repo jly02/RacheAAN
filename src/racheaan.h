@@ -5,9 +5,6 @@
 #ifndef RACHEAAN_H
 #define RACHEAAN_H
 
-using namespace std;
-using namespace seal;
-
 namespace racheaan
 {
     /**
@@ -32,8 +29,8 @@ namespace racheaan
          * @param value the value to be encrypted 
          */
         Ciphertext encrypt(double value);
-    private:    
-        vector<Ciphertext> ctxt;
+    private:
+        std::vector<Ciphertext> ctxt;
         Encryptor* enc;
         Evaluator* eval;
         Decryptor* dec;
