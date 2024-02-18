@@ -17,7 +17,11 @@ endif()
 if(SEAL_BUILD_EXAMPLES)
     add_executable(RacheAAN)
 
-    target_sources(RacheAAN PRIVATE CKKSTest.cpp)
+    target_sources(RacheAAN 
+        PRIVATE 
+            CKKSTest.cpp 
+            racheaan.cpp
+    )
 
     if(TARGET SEAL::seal)
         target_link_libraries(RacheAAN PRIVATE SEAL::seal)
