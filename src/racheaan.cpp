@@ -40,13 +40,11 @@ namespace racheaan
         }
     }
 
-    Ciphertext Rache::encrypt(double value) 
+    void Rache::encrypt(double value, Ciphertext &destination) 
     {
         // dummy encryption
         Plaintext plain;
         encoder->encode(value, scale, plain);
-        Ciphertext cipher;
-        enc->encrypt(plain, cipher);
-        return cipher;
+        enc->encrypt(plain, destination);
     }
 }

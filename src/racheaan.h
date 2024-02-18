@@ -27,8 +27,9 @@ namespace racheaan
          * @brief Encrypts a value using the Rache scheme.
          * 
          * @param value the value to be encrypted 
+         * @param destination the ciphertext to overwrite with encrypted value
          */
-        seal::Ciphertext encrypt(double value);
+        void encrypt(double value, seal::Ciphertext &destination);
     private:
         std::vector<seal::Ciphertext> ctxt;
         seal::Encryptor* enc;
