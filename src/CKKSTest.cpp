@@ -73,7 +73,7 @@ int main()
     // ensure encryption was correctly handled
     for (int i = 0; i < 3; i++) {
         Plaintext plain_result;
-        decryptor.decrypt(ctxt.at(i), plain_result);
+        decryptor.decrypt(ctxt[i], plain_result);
         vector<double> result;
         encoder.decode(plain_result, result);
         cout << result.at(0) << " ";
@@ -87,27 +87,27 @@ int main()
 
     start = chrono::high_resolution_clock::now();
 
-    evaluator.add(ctxt.at(2), ctxt.at(1), constructed);
+    evaluator.add(ctxt[2], ctxt[1], constructed);
     evaluator.add_inplace(constructed, ctxt.at(0));
     ctxt_constructed.push_back(constructed);
 
-    evaluator.add(ctxt.at(2), ctxt.at(1), constructed);
+    evaluator.add(ctxt[2], ctxt[1], constructed);
     ctxt_constructed.push_back(constructed);
 
-    evaluator.add(ctxt.at(2), ctxt.at(0), constructed);
+    evaluator.add(ctxt[2], ctxt[0], constructed);
     ctxt_constructed.push_back(constructed);
 
-    evaluator.add(ctxt.at(1), ctxt.at(1), constructed);
+    evaluator.add(ctxt[1], ctxt[1], constructed);
     ctxt_constructed.push_back(constructed);
 
-    evaluator.add(ctxt.at(1), ctxt.at(0), constructed);
+    evaluator.add(ctxt[1], ctxt[0], constructed);
     ctxt_constructed.push_back(constructed);
 
-    evaluator.add(ctxt.at(0), ctxt.at(0), constructed);
+    evaluator.add(ctxt[0], ctxt[0], constructed);
     ctxt_constructed.push_back(constructed);
 
-    evaluator.add(ctxt.at(0), ctxt.at(0), constructed);
-    evaluator.sub_inplace(constructed, ctxt.at(0));
+    evaluator.add(ctxt[0], ctxt[0], constructed);
+    evaluator.sub_inplace(constructed, ctxt[0]);
     ctxt_constructed.push_back(constructed);
 
     cout << "First radix cipher scale: " << log2(ctxt.at(2).scale()) << " bits." << endl;
