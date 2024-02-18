@@ -2,8 +2,9 @@
 #include "seal/seal.h"
 
 using namespace seal;
+using namespace racheaan;
 
-RacheAAN::RacheAAN(size_t poly_modulus_degree, int init_cache_size) 
+Rache::Rache(size_t poly_modulus_degree, int init_cache_size) 
 {
     EncryptionParameters params(scheme_type::ckks);
     params.set_poly_modulus_degree(poly_modulus_degree);
@@ -37,7 +38,7 @@ RacheAAN::RacheAAN(size_t poly_modulus_degree, int init_cache_size)
     }
 }
 
-Ciphertext RacheAAN::encrypt(double value) 
+Ciphertext Rache::encrypt(double value) 
 {
     // dummy encryption
     Plaintext plain;
