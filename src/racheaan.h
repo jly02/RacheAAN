@@ -23,6 +23,13 @@ public:
      * @param init_cache_size the initial number of ciphertexts to be cached
      */
     RacheAAN(size_t poly_modulus_degree = 8192, int init_cache_size);
+
+    /**
+     * @brief Encrypts a value using the Rache scheme.
+     * 
+     * @param value the value to be encrypted 
+     */
+    Ciphertext encrypt(double value);
 private:
     vector<Ciphertext> ctxt;
     Encryptor* enc;
