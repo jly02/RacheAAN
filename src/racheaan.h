@@ -28,13 +28,13 @@ namespace racheaan
          * 
          * @param value the value to be encrypted 
          */
-        Ciphertext encrypt(double value);
+        seal::Ciphertext encrypt(double value);
     private:
-        std::vector<Ciphertext> ctxt;
-        Encryptor* enc;
-        Evaluator* eval;
-        Decryptor* dec;
-        CKKSEncoder* encoder;
+        std::vector<seal::Ciphertext> ctxt;
+        seal::Encryptor* enc;
+        seal::Evaluator* eval;
+        seal::Decryptor* dec;
+        seal::CKKSEncoder* encoder;
         double scale;
     };
 }
