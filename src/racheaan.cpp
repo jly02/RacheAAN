@@ -47,4 +47,8 @@ namespace racheaan
         encoder->encode(value, scale, plain);
         enc->encrypt(plain, destination);
     }
+
+    void Rache::decrypt(Ciphertext &encrypted, Plaintext &destination) {
+        dec->decrypt(encrypted, destination);
+    }
 }

@@ -30,6 +30,14 @@ namespace racheaan
          * @param destination the ciphertext to overwrite with encrypted value
          */
         void encrypt(double value, seal::Ciphertext &destination);
+
+        /**
+         * @brief Decrypts a ciphertext, storing the result in the destination parameter.
+         * 
+         * @param encrypted the ciphertext to be decrypted
+         * @param destination the plaintext to be overwritten with the decrypted ciphertext
+         */
+        void decrypt(seal::Ciphertext &encrypted, seal::Plaintext &destination);
     private:
         std::vector<seal::Ciphertext> ctxt;
         seal::Encryptor* enc;
