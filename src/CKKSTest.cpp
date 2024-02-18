@@ -87,6 +87,13 @@ int main()
 
     start = chrono::high_resolution_clock::now();
 
+    evaluator.add(ctxt.at(2), ctxt.at(1), constructed);
+    evaluator.add_inplace(constructed, ctxt.at(0));
+    ctxt_constructed.push_back(constructed);
+
+    evaluator.add(ctxt.at(2), ctxt.at(1), constructed);
+    ctxt_constructed.push_back(constructed);
+
     evaluator.add(ctxt.at(2), ctxt.at(0), constructed);
     ctxt_constructed.push_back(constructed);
 
@@ -108,10 +115,10 @@ int main()
 
     stop = chrono::high_resolution_clock::now();
     duration = chrono::duration_cast<chrono::milliseconds>(stop - start);
-    cout << "Encryption of 5 numbers with radix addition took " << duration.count() << " milliseconds." << endl;
+    cout << "Encryption of 7 numbers with radix addition took " << duration.count() << " milliseconds." << endl;
 
     // ensure encryption was correctly handled
-    for (int i = 0; i < 5; i++) {
+    for (int i = 0; i < 7; i++) {
         Plaintext plain_result;
         decryptor.decrypt(ctxt_constructed.at(i), plain_result);
         vector<double> result;
