@@ -134,11 +134,11 @@ int main()
     Ciphertext scale_test_ctxt;
     encryptor.encrypt(scale_test_ptxt, scale_test_ctxt);
     cout << "Scale test initial: " << log2(scale_test_ctxt.scale()) << " bits." << endl;
-    for (int i = 0; i < 1000; i++) {
+    for (int i = 0; i < 100; i++) {
         evaluator.add_inplace(scale_test_ctxt, ctxt.at(2));
     }
 
-    cout << "Scale test after 1000 additions: " << log2(scale_test_ctxt.scale()) << " bits." << endl;
+    cout << "Scale test after 100 additions: " << log2(scale_test_ctxt.scale()) << " bits." << endl;
     decryptor.decrypt(scale_test_ctxt, scale_test_ptxt);
     vector<double> scale_test_dec;
     encoder.decode(scale_test_ptxt, scale_test_dec);
