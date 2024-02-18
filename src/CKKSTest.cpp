@@ -1,8 +1,10 @@
 #include <iostream>
 #include "seal/seal.h"
+#include "racheaan.h"
 
 using namespace std;
 using namespace seal;
+using namespace racheaan;
 
 /**
  * Small test file for initial commit.
@@ -143,6 +145,21 @@ int main()
     vector<double> scale_test_dec;
     encoder.decode(scale_test_ptxt, scale_test_dec);
     cout << "Decoding scale test: " << scale_test_dec.at(0) << endl;
+
+    cout << "Tests using Rache" << endl;
+
+    Rache rache;
+    
+    Ciphertext cipher_rache;
+    rache.encrypt(10, cipher_rache);
+
+    Plaintext plain_rache;
+    rache.decrypt(cipher_rache, plain_rache);
+
+    vector<double> decrypted_rache;
+    encoder.decode(plain_rache, decrypted_rache);
+
+    cout << "Encrypted 10 with Rache, decrypted and got " << decrypted_rache[0] << endl;
 
     return 0;
 }
