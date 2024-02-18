@@ -22,7 +22,7 @@ public:
      * @param poly_modulus_degree the degree of the polynomial modulus
      * @param init_cache_size the initial number of ciphertexts to be cached
      */
-    RacheAAN(size_t poly_modulus_degree = 8192, int init_cache_size);
+    RacheAAN(size_t poly_modulus_degree = 8192, int init_cache_size = 10);
 
     /**
      * @brief Encrypts a value using the Rache scheme.
