@@ -8,6 +8,20 @@ using namespace racheaan;
 
 void initialize(int arr[], int size);
 
+// size of random array to benchmark
+const int SIZE = 20;
+
+// number of initial ciphertexts to be cached
+const int INIT_CACHE_SIZE = 15;
+
+// minimum size of values to be benchmarked
+// Inv: MIN_VAL > 0
+const int MIN_VAL = 1;
+
+// maximum size of values to be benchmarked
+// If n = INIT_CACHE_SIZE, then should have something like MAX_VAL < 2^n
+const int MAX_VAL = 30000;
+
 /**
  * Some benchmarks to test performance differences.
  */
@@ -44,7 +58,6 @@ int main()
 
     // array of random integers to be encoded
     cout << "Generating random array of integers..." << endl;
-    const int SIZE = 100;
     int random_arr[SIZE];
     initialize(random_arr, SIZE);
 
@@ -68,20 +81,38 @@ int main()
 
     // timing initialization
     start = chrono::high_resolution_clock::now();
-    Rache rache;
+    Rache rache(INIT_CACHE_SIZE);
     stop = chrono::high_resolution_clock::now();
     duration = chrono::duration_cast<chrono::milliseconds>(stop - start);
-    cout << "Initialization of cache of size 10 took " << duration.count() << " milliseconds." << endl;
+    cout << "Initialization of cache took " << duration.count() << " milliseconds." << endl;
     
+    // Store ciphertexts to check output later
+    Ciphertext ctxt[SIZE];
+
     cout << "Encrypting random array with Rache..." << endl;
-    Ciphertext cipher_rache;
     start = chrono::high_resolution_clock::now();
     for (int i = 0; i < SIZE; i ++) {
-        rache.encrypt(random_arr[i], cipher_rache);
+        rache.encrypt(random_arr[i], ctxt[i]);
     }
     stop = chrono::high_resolution_clock::now();
     duration = chrono::duration_cast<chrono::milliseconds>(stop - start);
     cout << "Encryption of " << SIZE << " numbers in Rache took " << duration.count() << " milliseconds." << endl;
+
+    // print decrypted ciphertexts
+    vector<double> output(SIZE);
+    for (int i = 0; i < SIZE; i++) {
+        Plaintext rache_plain;
+        rache.decrypt(ctxt[i], rache_plain);
+        vector<double> rache_decoded;
+        encoder.decode(rache_plain, rache_decoded);
+        output[i] = rache_decoded[0];
+    }
+
+    for (int i = 0; i < SIZE; i++) {
+        cout << output[i] << " ";
+    }
+
+    cout << endl;
 
     return 0;
 }
@@ -91,7 +122,13 @@ void initialize(int arr[], int size) {
     srand(time(0));
 
     for(int i = 0; i < size; i++){
-        arr[i] = (rand() % 100) + 1;
+        arr[i] = (rand() % MAX_VAL) + MIN_VAL;
     }
+
+    for(int i = 0; i < size; i++){
+        cout << arr[i] << " ";
+    }
+
+    cout << endl;
 }
 
