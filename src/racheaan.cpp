@@ -36,16 +36,32 @@ namespace racheaan
             encoder->encode(pow(2, i), scale, radix_plain);
             Ciphertext radix_cipher;
             enc->encrypt(radix_plain, radix_cipher);
-            ctxt.push_back(radix_cipher);
+            radixes.push_back(radix_cipher);
         }
     }
 
     void Rache::encrypt(double value, Ciphertext &destination) 
     {
-        // dummy encryption
-        Plaintext plain;
-        encoder->encode(value, scale, plain);
-        enc->encrypt(plain, destination);
+        // setting up indexed radixes
+        int digits = floor(log2(value));
+        int idx[digits];
+        for (int j = 0; j <= digits; j++) 
+        {
+            idx[j] = ((int) (value / pow(2.0, j))) % 2;
+        }
+
+        // start with he(1)
+        destination = radixes[0];
+        for (int k = 0; k <= digits; k++) 
+        {
+            for (int j = 1; j <= idx[k]; j++) 
+            {
+                eval->add_inplace(destination, radixes[k]);
+            }
+        }
+
+        // subtract he(1)
+        eval->sub_inplace(destination, radixes[0]);
     }
 
     void Rache::decrypt(Ciphertext &encrypted, Plaintext &destination) {
