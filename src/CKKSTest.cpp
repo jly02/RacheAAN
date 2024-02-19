@@ -8,8 +8,11 @@ using namespace racheaan;
 
 void initialize(int arr[], int size);
 
+// print randomized array values + after decryption
+const bool PRINT = false;
+
 // size of random array to benchmark
-const int SIZE = 20;
+const int SIZE = 200;
 
 // number of initial ciphertexts to be cached
 const int INIT_CACHE_SIZE = 15;
@@ -98,21 +101,23 @@ int main()
     duration = chrono::duration_cast<chrono::milliseconds>(stop - start);
     cout << "Encryption of " << SIZE << " numbers in Rache took " << duration.count() << " milliseconds." << endl;
 
-    // print decrypted ciphertexts
-    vector<double> output(SIZE);
-    for (int i = 0; i < SIZE; i++) {
-        Plaintext rache_plain;
-        rache.decrypt(ctxt[i], rache_plain);
-        vector<double> rache_decoded;
-        encoder.decode(rache_plain, rache_decoded);
-        output[i] = rache_decoded[0];
-    }
+    if(PRINT) {
+        // print decrypted ciphertexts
+        vector<double> output(SIZE);
+        for (int i = 0; i < SIZE; i++) {
+            Plaintext rache_plain;
+            rache.decrypt(ctxt[i], rache_plain);
+            vector<double> rache_decoded;
+            encoder.decode(rache_plain, rache_decoded);
+            output[i] = rache_decoded[0];
+        }
 
-    for (int i = 0; i < SIZE; i++) {
-        cout << output[i] << " ";
-    }
+        for (int i = 0; i < SIZE; i++) {
+            cout << output[i] << " ";
+        }
 
-    cout << endl;
+        cout << endl;
+    }
 
     return 0;
 }
@@ -125,8 +130,10 @@ void initialize(int arr[], int size) {
         arr[i] = (rand() % MAX_VAL) + MIN_VAL;
     }
 
-    for(int i = 0; i < size; i++){
-        cout << arr[i] << " ";
+    if(PRINT) {
+        for(int i = 0; i < size; i++){
+            cout << arr[i] << " ";
+        }
     }
 
     cout << endl;
