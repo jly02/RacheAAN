@@ -40,6 +40,10 @@ namespace racheaan
         }
     }
 
+    Rache::Rache(int init_cache_size) : Rache(8192, init_cache_size)
+    {
+    }
+
     void Rache::encrypt(double value, Ciphertext &destination) 
     {
         // setting up indexed radixes
