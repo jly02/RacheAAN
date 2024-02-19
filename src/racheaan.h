@@ -38,9 +38,9 @@ namespace racheaan
          * @param destination the plaintext to be overwritten with the decrypted ciphertext
          */
         void decrypt(seal::Ciphertext &encrypted, seal::Plaintext &destination);
-        
+
     private:
-        std::vector<seal::Ciphertext> ctxt;
+        std::vector<seal::Ciphertext> radixes;
         seal::Encryptor* enc;
         seal::Evaluator* eval;
         seal::Decryptor* dec;
