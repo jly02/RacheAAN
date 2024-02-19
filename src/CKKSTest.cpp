@@ -6,8 +6,10 @@ using namespace std;
 using namespace seal;
 using namespace racheaan;
 
+void initialize(int arr[], int size);
+
 /**
- * Small test file for initial commit.
+ * Some benchmarks to test performance differences.
  */
 int main()
 {
@@ -31,14 +33,6 @@ int main()
     SecretKey secret_key = keygen.secret_key();
     PublicKey public_key;
     keygen.create_public_key(public_key);
-
-    // not necessary right now 
-    /*
-    RelinKeys relin_keys;
-    keygen.create_relin_keys(relin_keys);
-    GaloisKeys gal_keys;
-    keygen.create_galois_keys(gal_keys);
-    */
    
     // encryptor, evalutator, and decryptor
     Encryptor encryptor(context, public_key);
@@ -48,119 +42,56 @@ int main()
     // encoder for ckks scheme
     CKKSEncoder encoder(context);
 
+    // array of random integers to be encoded
+    cout << "Generating random array of integers..." << endl;
+    const int SIZE = 100;
+    int random_arr[SIZE];
+    initialize(random_arr, SIZE);
+
+    cout << "Encrypting random array with pure CKKS..." << endl;
+
     Plaintext plain;
     Ciphertext cipher;
     auto start = chrono::high_resolution_clock::now();
     // encode and encrypt small batch of numbers
-    for (int i = 1; i <= 5; i ++) {
-        encoder.encode((double) i, scale, plain);
+    for (int i = 0; i < SIZE; i ++) {
+        encoder.encode(random_arr[i], scale, plain);
         encryptor.encrypt(plain, cipher);
     }
     // timing this small test
     auto stop = chrono::high_resolution_clock::now();
     auto duration = chrono::duration_cast<chrono::milliseconds>(stop - start);
-    cout << "Encryption of 5 numbers in CKKS took " << duration.count() << " milliseconds." << endl;
+    cout << "Encryption of " << SIZE << " numbers in CKKS took " << duration.count() << " milliseconds." << endl;
 
+    // Rache timing
+    cout << "Testing same array with Rache..." << endl;
 
-    vector<Ciphertext> ctxt;
-    // encrypt small powers of 2
-    for (int i = 0; i < 3; i++) {
-        Plaintext radix_plain;
-        encoder.encode(pow(2, i), scale, radix_plain);
-        Ciphertext radix_cipher;
-        encryptor.encrypt(radix_plain, radix_cipher);
-        ctxt.push_back(radix_cipher);
-    }
-
-    // ensure encryption was correctly handled
-    for (int i = 0; i < 3; i++) {
-        Plaintext plain_result;
-        decryptor.decrypt(ctxt[i], plain_result);
-        vector<double> result;
-        encoder.decode(plain_result, result);
-        cout << result.at(0) << " ";
-    }
-
-    cout << endl;
-
-    // Manually construct some numbers [5, 4, 3, 2, 1]
-    vector<Ciphertext> ctxt_constructed;
-    Ciphertext constructed;
-
+    // timing initialization
     start = chrono::high_resolution_clock::now();
-
-    evaluator.add(ctxt[2], ctxt[1], constructed);
-    evaluator.add_inplace(constructed, ctxt.at(0));
-    ctxt_constructed.push_back(constructed);
-
-    evaluator.add(ctxt[2], ctxt[1], constructed);
-    ctxt_constructed.push_back(constructed);
-
-    evaluator.add(ctxt[2], ctxt[0], constructed);
-    ctxt_constructed.push_back(constructed);
-
-    evaluator.add(ctxt[1], ctxt[1], constructed);
-    ctxt_constructed.push_back(constructed);
-
-    evaluator.add(ctxt[1], ctxt[0], constructed);
-    ctxt_constructed.push_back(constructed);
-
-    evaluator.add(ctxt[0], ctxt[0], constructed);
-    ctxt_constructed.push_back(constructed);
-
-    evaluator.add(ctxt[0], ctxt[0], constructed);
-    evaluator.sub_inplace(constructed, ctxt[0]);
-    ctxt_constructed.push_back(constructed);
-
-    cout << "First radix cipher scale: " << log2(ctxt.at(2).scale()) << " bits." << endl;
-    cout << "Constructed cipher scale: " << log2(constructed.scale()) << " bits." << endl;
-
+    Rache rache;
     stop = chrono::high_resolution_clock::now();
     duration = chrono::duration_cast<chrono::milliseconds>(stop - start);
-    cout << "Encryption of 7 numbers with radix addition took " << duration.count() << " milliseconds." << endl;
-
-    // ensure encryption was correctly handled
-    for (int i = 0; i < 7; i++) {
-        Plaintext plain_result;
-        decryptor.decrypt(ctxt_constructed.at(i), plain_result);
-        vector<double> result;
-        encoder.decode(plain_result, result);
-        cout << result.at(0) << " ";
-    }
-
-    cout << endl;
-
-    // performing many additions to test scaling
-    Plaintext scale_test_ptxt;
-    encoder.encode(200.505, scale, scale_test_ptxt);
-    Ciphertext scale_test_ctxt;
-    encryptor.encrypt(scale_test_ptxt, scale_test_ctxt);
-    cout << "Scale test initial: " << log2(scale_test_ctxt.scale()) << " bits." << endl;
-    for (int i = 0; i < 100; i++) {
-        evaluator.add_inplace(scale_test_ctxt, ctxt.at(2));
-    }
-
-    cout << "Scale test after 100 additions: " << log2(scale_test_ctxt.scale()) << " bits." << endl;
-    decryptor.decrypt(scale_test_ctxt, scale_test_ptxt);
-    vector<double> scale_test_dec;
-    encoder.decode(scale_test_ptxt, scale_test_dec);
-    cout << "Decoding scale test: " << scale_test_dec.at(0) << endl;
-
-    cout << "Tests using Rache" << endl;
-
-    Rache rache;
+    cout << "Initialization of cache of size 10 took " << duration.count() << " milliseconds." << endl;
     
+    cout << "Encrypting random array with Rache..." << endl;
     Ciphertext cipher_rache;
-    rache.encrypt(10, cipher_rache);
-
-    Plaintext plain_rache;
-    rache.decrypt(cipher_rache, plain_rache);
-
-    vector<double> decrypted_rache;
-    encoder.decode(plain_rache, decrypted_rache);
-
-    cout << "Encrypted 10 with Rache, decrypted and got " << decrypted_rache[0] << endl;
+    start = chrono::high_resolution_clock::now();
+    for (int i = 0; i < SIZE; i ++) {
+        rache.encrypt(random_arr[i], cipher_rache);
+    }
+    stop = chrono::high_resolution_clock::now();
+    duration = chrono::duration_cast<chrono::milliseconds>(stop - start);
+    cout << "Encryption of " << SIZE << " numbers in Rache took " << duration.count() << " milliseconds." << endl;
 
     return 0;
+}
+
+// initializes an array with random values
+void initialize(int arr[], int size) {
+    srand(time(0));
+
+    for(int i = 0; i < size; i++){
+        arr[i] = (rand() % 100) + 1;
+    }
 }
 
