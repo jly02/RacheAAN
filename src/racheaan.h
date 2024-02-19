@@ -24,7 +24,7 @@ namespace racheaan
         Rache(size_t poly_modulus_degree = 8192, int init_cache_size = 10);
 
         /**
-         * @brief Encrypts a value using the Rache scheme.
+         * @brief Encrypts a value using the Rache scheme, storing the result in the destination parameter.
          * 
          * @param value the value to be encrypted 
          * @param destination the ciphertext to overwrite with encrypted value
@@ -38,6 +38,7 @@ namespace racheaan
          * @param destination the plaintext to be overwritten with the decrypted ciphertext
          */
         void decrypt(seal::Ciphertext &encrypted, seal::Plaintext &destination);
+        
     private:
         std::vector<seal::Ciphertext> ctxt;
         seal::Encryptor* enc;
