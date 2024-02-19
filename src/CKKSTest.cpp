@@ -12,10 +12,10 @@ void initialize(int arr[], int size);
 const bool PRINT = false;
 
 // size of random array to benchmark
-const int SIZE = 200;
+const int SIZE = 20;
 
 // number of initial ciphertexts to be cached
-const int INIT_CACHE_SIZE = 15;
+const int INIT_CACHE_SIZE = 10;
 
 // minimum size of values to be benchmarked
 // Inv: MIN_VAL > 0
@@ -23,7 +23,10 @@ const int MIN_VAL = 1;
 
 // maximum size of values to be benchmarked
 // If n = INIT_CACHE_SIZE, then should have something like MAX_VAL < 2^n
-const int MAX_VAL = 30000;
+const int MAX_VAL = 500;
+
+// polynomial modulus degree to be kept consistent between pure CKKS and Rache
+const size_t POLY_MODULUS_DEGREE = 8192;
 
 /**
  * Some benchmarks to test performance differences.
@@ -32,12 +35,11 @@ int main()
 {
     // set up params
     EncryptionParameters params(scheme_type::ckks);
-    size_t poly_modulus_degree = 8192;
-    params.set_poly_modulus_degree(poly_modulus_degree);
+    params.set_poly_modulus_degree(POLY_MODULUS_DEGREE);
 
     // choose 60 bit primes for first and last (last should just be at least as large as first)
     // also choose intermediate primes to be close to each other
-    params.set_coeff_modulus(CoeffModulus::Create(poly_modulus_degree, { 60, 40, 40, 60 }));
+    params.set_coeff_modulus(CoeffModulus::Create(POLY_MODULUS_DEGREE, { 60, 40, 40, 60 }));
 
     // scale stabilization with 2^40 scale, close to the intermediate primes
     double scale = pow(2.0, 40);
@@ -84,7 +86,7 @@ int main()
 
     // timing initialization
     start = chrono::high_resolution_clock::now();
-    Rache rache(INIT_CACHE_SIZE);
+    Rache rache(POLY_MODULUS_DEGREE, INIT_CACHE_SIZE);
     stop = chrono::high_resolution_clock::now();
     duration = chrono::duration_cast<chrono::milliseconds>(stop - start);
     cout << "Initialization of cache took " << duration.count() << " milliseconds." << endl;
