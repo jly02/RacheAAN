@@ -58,18 +58,17 @@ namespace racheaan
 
 #endif
 
-/// @param[in] nb_elements : size of your for loop
-/// @param[in] functor(start, end) :
-/// your function processing a sub chunk of the for loop.
-/// "start" is the first index to process (included) until the index "end"
-/// (excluded)
-/// @code
-///     for(int i = start; i < end; ++i)
-///         computation(i);
-/// @endcode
-/// @param use_threads : enable / disable threads.
-///
-///
+/**
+ * @brief Parallelize a basic for loop, should not be used for anything
+ *        requiring concurrent access to the same object in any way.
+ * 
+ * @param nb_elements size of your for loop
+ * @param functor(start,end)
+ * your function processing a sub chunk of the for loop.
+ * "start" is the first index to process (included) until the index "end"
+ * (excluded)
+ * @param use_threads enable / disable threads.
+ */
 static
 void parallel_for(unsigned nb_elements,
                   std::function<void (int start, int end)> functor,
