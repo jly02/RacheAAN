@@ -68,7 +68,6 @@ namespace racheaan
             }
         });
 
-
         // start with he(1)
         destination = radixes[0];
         parallel_for(digits + 1, [&](int start, int end)
@@ -81,7 +80,6 @@ namespace racheaan
                 }
             }
         });
-
 
         // subtract he(1)
         eval->sub_inplace(destination, radixes[0]);
