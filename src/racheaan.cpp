@@ -70,16 +70,13 @@ namespace racheaan
 
         // start with he(1)
         destination = radixes[0];
-        parallel_for(digits + 1, [&](int start, int end)
-        {
-            for (int k = start; k < end; k++) 
-            {   
-                for (int j = 1; j <= idx[k]; j++) 
-                {
-                    eval->add_inplace(destination, radixes[k]);
-                }
+        for (int k = 0; k <= digits; k++) 
+        {   
+            for (int j = 1; j <= idx[k]; j++) 
+            {
+                eval->add_inplace(destination, radixes[k]);
             }
-        });
+        }
 
         // subtract he(1)
         eval->sub_inplace(destination, radixes[0]);
