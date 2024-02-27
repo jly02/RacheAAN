@@ -3,6 +3,8 @@ Rache is a radix-based homomorphic encryption algorithm that utilizes a base sch
 
 The [Rache paper](https://dl.acm.org/doi/10.1145/3588920) that premiered in SIGMOD'23 uses two schemes, [Paillier](https://link.springer.com/content/pdf/10.1007/3-540-48910-X_16.pdf) and [Symmetria](https://dl.acm.org/doi/10.14778/3389133.3389144), and shows that great performance benefits can be gained in systems using Rache over purely one or the other. However, these schemes only work on integers. This project aims to make use of the [CKKS](https://eprint.iacr.org/2016/421.pdf) (also known as HEAAN) scheme to extend the functionality of Rache to operations over the real numbers.
 
+**IMPORTANT DISCLAIMER:** This project is for research purposes, _it is not secure_! Do not use this in production.
+
 ## Steps to Build
 ### Dependencies: 
 - CMake 3.13+
