@@ -29,7 +29,7 @@ const int MAX_VAL = 500;
 const size_t POLY_MODULUS_DEGREE = 8192;
 
 /**
- * Some benchmarks to test performance differences.
+ * Some benchmarks to test performance differences for CKKS.
  */
 int main()
 {
