@@ -79,7 +79,8 @@ namespace racheaan
         eval->sub_inplace(destination, radixes[0]);
     }
 
-    void Rache::decrypt(Ciphertext &encrypted, Plaintext &destination) {
+    void Rache::decrypt(Ciphertext &encrypted, Plaintext &destination) 
+    {
         dec->decrypt(encrypted, destination);
     }
 }

@@ -71,7 +71,8 @@ void ckks_bench()
     Ciphertext cipher;
     auto start = chrono::high_resolution_clock::now();
     // encode and encrypt small batch of numbers
-    for (int i = 0; i < SIZE; i ++) {
+    for (int i = 0; i < SIZE; i ++) 
+    {
         encoder.encode(random_arr[i], scale, plain);
         encryptor.encrypt(plain, cipher);
     }
@@ -95,17 +96,20 @@ void ckks_bench()
 
     cout << "Encrypting random array with Rache..." << endl;
     start = chrono::high_resolution_clock::now();
-    for (int i = 0; i < SIZE; i ++) {
+    for (int i = 0; i < SIZE; i ++) 
+    {
         rache.encrypt(random_arr[i], ctxt[i]);
     }
     stop = chrono::high_resolution_clock::now();
     duration = chrono::duration_cast<chrono::milliseconds>(stop - start);
     cout << "Encryption of " << SIZE << " numbers in Rache took " << duration.count() << " milliseconds." << endl;
 
-    if(PRINT) {
+    if(PRINT) 
+    {
         // print decrypted ciphertexts
         vector<double> output(SIZE);
-        for (int i = 0; i < SIZE; i++) {
+        for (int i = 0; i < SIZE; i++) 
+        {
             Plaintext rache_plain;
             rache.decrypt(ctxt[i], rache_plain);
             vector<double> rache_decoded;
@@ -113,7 +117,8 @@ void ckks_bench()
             output[i] = rache_decoded[0];
         }
 
-        for (int i = 0; i < SIZE; i++) {
+        for (int i = 0; i < SIZE; i++) 
+        {
             cout << output[i] << " ";
         }
 
