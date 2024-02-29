@@ -1,5 +1,4 @@
 #include "racheaan.h"
-#include "seal/seal.h"
 
 using namespace seal;
 using namespace racheaan;
