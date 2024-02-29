@@ -9,13 +9,13 @@ using namespace racheaan;
 void initialize(int arr[], int size);
 
 // print randomized array values + after decryption
-const bool PRINT = false;
+const bool PRINT = true;
 
 // size of random array to benchmark
 const int SIZE = 20;
 
 // number of initial ciphertexts to be cached
-const int INIT_CACHE_SIZE = 10;
+const int INIT_CACHE_SIZE = 16;
 
 // minimum size of values to be benchmarked
 // Inv: MIN_VAL > 0
@@ -23,7 +23,7 @@ const int MIN_VAL = 1;
 
 // maximum size of values to be benchmarked
 // If n = INIT_CACHE_SIZE, then should have something like MAX_VAL < 2^n
-const int MAX_VAL = 500;
+const int MAX_VAL = 20000;
 
 // polynomial modulus degree to be kept consistent between pure CKKS and Rache
 const size_t POLY_MODULUS_DEGREE = 8192;
@@ -128,12 +128,22 @@ int main()
 void initialize(int arr[], int size) {
     srand(time(0));
 
-    for(int i = 0; i < size; i++){
-        arr[i] = (rand() % MAX_VAL) + MIN_VAL;
+    for(int i = 0; i < size; i++)
+    {
+        if(MIN_VAL == MAX_VAL) 
+        {
+            arr[i] = MIN_VAL;
+        }
+        else
+        {
+            arr[i] = (rand() % MAX_VAL) + MIN_VAL;
+        }
     }
 
-    if(PRINT) {
-        for(int i = 0; i < size; i++){
+    if(PRINT) 
+    {
+        for(int i = 0; i < size; i++)
+        {
             cout << arr[i] << " ";
         }
     }
