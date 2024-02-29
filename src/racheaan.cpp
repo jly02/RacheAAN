@@ -1,5 +1,3 @@
-#include <omp.h>
-
 #include "racheaan.h"
 #include "seal/seal.h"
 
