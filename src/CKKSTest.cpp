@@ -1,12 +1,11 @@
 #include <iostream>
 #include "seal/seal.h"
 #include "racheaan.h"
+#include "bench.h"
 
 using namespace std;
 using namespace seal;
 using namespace racheaan;
-
-void initialize(int arr[], int size);
 
 // print randomized array values + after decryption
 const bool PRINT = true;
@@ -31,7 +30,7 @@ const size_t POLY_MODULUS_DEGREE = 8192;
 /**
  * Some benchmarks to test performance differences for CKKS.
  */
-int main()
+void ckks_bench()
 {
     // set up params
     EncryptionParameters params(scheme_type::ckks);
@@ -64,7 +63,7 @@ int main()
     // array of random integers to be encoded
     cout << "Generating random array of integers..." << endl;
     int random_arr[SIZE];
-    initialize(random_arr, SIZE);
+    initialize(random_arr, SIZE, MIN_VAL, MAX_VAL, PRINT);
 
     cout << "Encrypting random array with pure CKKS..." << endl;
 
@@ -120,34 +119,7 @@ int main()
 
         cout << endl;
     }
-
-    return 0;
 }
 
-// initializes an array with random values
-void initialize(int arr[], int size) {
-    srand(time(0));
 
-    for(int i = 0; i < size; i++)
-    {
-        if(MIN_VAL == MAX_VAL) 
-        {
-            arr[i] = MIN_VAL;
-        }
-        else
-        {
-            arr[i] = (rand() % MAX_VAL) + MIN_VAL;
-        }
-    }
-
-    if(PRINT) 
-    {
-        for(int i = 0; i < size; i++)
-        {
-            cout << arr[i] << " ";
-        }
-    }
-
-    cout << endl;
-}
 

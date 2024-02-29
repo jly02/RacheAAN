@@ -9,16 +9,18 @@ find_package(SEAL 4.1.1 EXACT REQUIRED)
 
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/bin)
 
-add_executable(RacheAAN)
-target_sources(RacheAAN 
+add_executable(benchmarks)
+target_sources(benchmarks 
     PRIVATE 
+        bench.cpp
         CKKSTest.cpp 
+        BFVTest.cpp
         racheaan.cpp
 )
 if(TARGET SEAL::seal)
-    target_link_libraries(RacheAAN PRIVATE SEAL::seal)
+    target_link_libraries(benchmarks PRIVATE SEAL::seal)
 elseif(TARGET SEAL::seal_shared)
-    target_link_libraries(RacheAAN PRIVATE SEAL::seal_shared)
+    target_link_libraries(benchmarks PRIVATE SEAL::seal_shared)
 else()
     message(FATAL_ERROR "Cannot find target SEAL::seal or SEAL::seal_shared")
 endif()
