@@ -16,7 +16,7 @@ inline void initialize(int arr[], int size, int MIN_VAL, int MAX_VAL, bool PRINT
         }
         else
         {
-            arr[i] = (rand() % MAX_VAL) + MIN_VAL;
+            arr[i] = (rand() + MIN_VAL) % MAX_VAL;
         }
     }
 
