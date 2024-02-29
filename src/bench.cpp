@@ -5,7 +5,8 @@ using namespace std;
 int main()
 {
     int selection = 0;
-    cout << "Choose a scheme to benchmark. 1 for CKKS, 2 for BFV." << endl;
+    cout << "Choose a scheme to benchmark." << endl;
+    cout << "[1 - CKKS | 2 - BFV]: ";
     cin >> selection;
     switch(selection) 
     {
