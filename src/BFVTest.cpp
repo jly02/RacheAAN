@@ -9,7 +9,7 @@ using namespace seal;
 const bool PRINT = false;
 
 // size of random array to benchmark
-const int SIZE = 20;
+const int SIZE = 100;
 
 // minimum size of values to be benchmarked
 // Inv: MIN_VAL > 0
@@ -27,6 +27,56 @@ void bfv_bench()
     EncryptionParameters params(scheme_type::bfv);
     size_t poly_modulus_degree = 4096;
     params.set_poly_modulus_degree(poly_modulus_degree);
+    params.set_coeff_modulus(CoeffModulus::BFVDefault(poly_modulus_degree));
     params.set_plain_modulus(1024);
+
+    // gather context
+    SEALContext context(params);
+
+    // generate keys
+    KeyGenerator keygen(context);
+    SecretKey secret_key = keygen.secret_key();
+    PublicKey public_key;
+    keygen.create_public_key(public_key);
+
+    // set up encryptor, evaluator, decryptor
+    Encryptor encryptor(context, public_key);
+    Evaluator evaluator(context);
+    Decryptor decryptor(context, secret_key);
+
+    // array of random integers to be encoded
+    cout << "Generating random array of integers..." << endl;
+    int random_arr[SIZE];
+    initialize(random_arr, SIZE, MIN_VAL, MAX_VAL, PRINT);
+
+    Ciphertext cipher;
+    auto start = chrono::high_resolution_clock::now();
+    // encode and encrypt small batch of numbers
+    for (int i = 0; i < SIZE; i ++) 
+    {
+        Plaintext plain(random_arr[i]);
+        encryptor.encrypt(plain, cipher);
+    }
+    // timing this small test
+    auto stop = chrono::high_resolution_clock::now();
+    auto duration = chrono::duration_cast<chrono::milliseconds>(stop - start);
+    cout << "Encryption of " << SIZE << " numbers in BFV took " << duration.count() << " milliseconds." << endl;
+
+    // set up test for some number of additions
+    Plaintext plain_zero(0);
+    Plaintext plain_plus(2);
+    Ciphertext cipher_zero;
+    Ciphertext cipher_plus;
+    encryptor.encrypt(plain_zero, cipher_zero);
+    encryptor.encrypt(plain_plus, cipher_plus);
+
+    start = chrono::high_resolution_clock::now();
+    for (int i = 0; i < SIZE; i++)
+    {
+        evaluator.add_inplace(cipher_plus, cipher_plus);
+    }
+    stop = chrono::high_resolution_clock::now();
+    duration = chrono::duration_cast<chrono::milliseconds>(stop - start);
+    cout << SIZE << " homomorphic additions in BFV took " << duration.count() << " milliseconds." << endl;
 }
 
