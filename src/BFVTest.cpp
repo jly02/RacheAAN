@@ -9,14 +9,14 @@ using namespace seal;
 const bool PRINT = false;
 
 // size of random array to benchmark
-const int SIZE = 100;
+const int SIZE = 400;
 
 // minimum size of values to be benchmarked
 // Inv: MIN_VAL > 0
 const int MIN_VAL = 1;
 
 // maximum size of values to be benchmarked
-const int MAX_VAL = 1024;
+const int MAX_VAL = 400;
 
 /**
  * Some benchmarks to test performance differences.
@@ -49,12 +49,14 @@ void bfv_bench()
     int random_arr[SIZE];
     initialize(random_arr, SIZE, MIN_VAL, MAX_VAL, PRINT);
 
+    cout << "Encrypting random array with pure BFV..." << endl;
+
     Ciphertext cipher;
     auto start = chrono::high_resolution_clock::now();
     // encode and encrypt small batch of numbers
     for (int i = 0; i < SIZE; i ++) 
-    {
-        Plaintext plain(random_arr[i]);
+    {   
+        Plaintext plain(to_string(random_arr[i]));
         encryptor.encrypt(plain, cipher);
     }
     // timing this small test
@@ -63,20 +65,32 @@ void bfv_bench()
     cout << "Encryption of " << SIZE << " numbers in BFV took " << duration.count() << " milliseconds." << endl;
 
     // set up test for some number of additions
-    Plaintext plain_zero(0);
-    Plaintext plain_plus(2);
+    Plaintext plain_zero("0");
+    Plaintext plain_plus("2");
     Ciphertext cipher_zero;
     Ciphertext cipher_plus;
     encryptor.encrypt(plain_zero, cipher_zero);
     encryptor.encrypt(plain_plus, cipher_plus);
 
+    cout << "cipher_zero noise budget before additions: " 
+         << decryptor.invariant_noise_budget(cipher_zero) << " bits." << endl;
+
+    // perform large number of additions
     start = chrono::high_resolution_clock::now();
     for (int i = 0; i < SIZE; i++)
     {
-        evaluator.add_inplace(cipher_plus, cipher_plus);
+        evaluator.add_plain_inplace(cipher_zero, plain_plus);
     }
     stop = chrono::high_resolution_clock::now();
     duration = chrono::duration_cast<chrono::milliseconds>(stop - start);
     cout << SIZE << " homomorphic additions in BFV took " << duration.count() << " milliseconds." << endl;
+
+    cout << "cipher_zero noise budget after " << SIZE << " plaintext additions: " 
+         << decryptor.invariant_noise_budget(cipher_zero) <<  " bits." << endl;
+
+    // check decrypted value is OK
+    Plaintext decrypted;
+    decryptor.decrypt(cipher_zero, decrypted);
+    cout << "Decryption result of " << SIZE << " additions: 0x" << decrypted.to_string() << endl;
 }
 
