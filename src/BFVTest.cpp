@@ -9,14 +9,14 @@ using namespace seal;
 const bool PRINT = false;
 
 // size of random array to benchmark
-const int SIZE = 400;
+const int SIZE = 50;
 
 // minimum size of values to be benchmarked
 // Inv: MIN_VAL > 0
-const int MIN_VAL = 1;
+const uint64_t MIN_VAL = 1;
 
 // maximum size of values to be benchmarked
-const int MAX_VAL = 400;
+const uint64_t MAX_VAL = 399;
 
 /**
  * Some benchmarks to test performance differences.
@@ -56,7 +56,7 @@ void bfv_bench()
     // encode and encrypt small batch of numbers
     for (int i = 0; i < SIZE; i ++) 
     {   
-        Plaintext plain(to_string(random_arr[i]));
+        Plaintext plain(uint64_to_hex_string(random_arr[i]));
         encryptor.encrypt(plain, cipher);
     }
     // timing this small test

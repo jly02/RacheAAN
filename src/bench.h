@@ -31,3 +31,11 @@ inline void initialize(int arr[], int size, int MIN_VAL, int MAX_VAL, bool PRINT
 
     std::cout << std::endl;
 }
+
+/*
+Helper function: Convert a value into a hexadecimal string, e.g., uint64_t(17) --> "11".
+*/
+inline std::string uint64_to_hex_string(std::uint64_t value)
+{
+    return seal::util::uint_to_hex_string(&value, std::size_t(1));
+}
