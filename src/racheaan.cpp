@@ -8,7 +8,7 @@ namespace racheaan
     Rache::Rache(size_t poly_modulus_degree, int init_cache_size) 
     {
         // vector should be initialized with a size so we can parallelize
-        radixes = std::vector<Ciphertext>(init_cache_size);
+        radixes = std::vector<Plaintext>(init_cache_size);
 
         EncryptionParameters params(scheme_type::ckks);
         params.set_poly_modulus_degree(poly_modulus_degree);
@@ -32,6 +32,12 @@ namespace racheaan
         // and the encoder object
         encoder = new CKKSEncoder(context);
 
+        // generate base cipher and subtraction cipher
+        Plaintext one_plain;
+        encoder->encode(1, scale, one_plain);
+        enc->encrypt(one_plain, one_base);
+        enc->encrypt(one_plain, one_sub);
+
         // parallelize initialization, not necessary but minor
         // performance benefits can be gained
         parallel_for(init_cache_size, [&](int start, int end)
@@ -41,9 +47,7 @@ namespace racheaan
             {
                 Plaintext radix_plain;
                 encoder->encode(pow(2, i), scale, radix_plain);
-                Ciphertext radix_cipher;
-                enc->encrypt(radix_plain, radix_cipher);
-                radixes[i] = radix_cipher;
+                radixes[i] = radix_plain;
             }
         });
     }
@@ -66,17 +70,17 @@ namespace racheaan
         });
 
         // start with he(1)
-        destination = radixes[0];
+        destination = one_base;
         for (int k = 0; k <= digits; k++) 
         {   
             for (int j = 1; j <= idx[k]; j++) 
             {
-                eval->add_inplace(destination, radixes[k]);
+                eval->add_plain_inplace(destination, radixes[k]);
             }
         }
 
         // subtract he(1)
-        eval->sub_inplace(destination, radixes[0]);
+        eval->sub_inplace(destination, one_sub);
     }
 
     void Rache::decrypt(Ciphertext &encrypted, Plaintext &destination) 

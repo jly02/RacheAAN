@@ -47,7 +47,9 @@ namespace racheaan
         void decrypt(seal::Ciphertext &encrypted, seal::Plaintext &destination);
 
     private:
-        std::vector<seal::Ciphertext> radixes;
+        std::vector<seal::Plaintext> radixes;
+        seal::Ciphertext one_base;
+        seal::Ciphertext one_sub;
         seal::Encryptor* enc;
         seal::Evaluator* eval;
         seal::Decryptor* dec;
