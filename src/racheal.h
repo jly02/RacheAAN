@@ -20,7 +20,7 @@ namespace racheal
          * 
          * @param init_cache_size the initial number of ciphertexts to be cached (10 by default)
          */
-        Rache(int init_cache_size = 10);
+        Rache(seal::scheme_type scheme, int init_cache_size = 10);
 
         /**
          * @brief Encrypts a value using the Rache scheme, storing the result in the destination parameter.

@@ -5,7 +5,7 @@ using namespace racheal;
 
 namespace racheal
 {
-    Rache::Rache(int init_cache_size) 
+    Rache::Rache(scheme_type scheme, int init_cache_size) 
     {
         // vector should be initialized with a size so we can parallelize
         radixes = std::vector<Plaintext>(init_cache_size);
