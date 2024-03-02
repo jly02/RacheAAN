@@ -86,7 +86,7 @@ void ckks_bench()
 
     // timing initialization
     start = chrono::high_resolution_clock::now();
-    Rache rache(POLY_MODULUS_DEGREE, INIT_CACHE_SIZE);
+    Rache rache(INIT_CACHE_SIZE);
     stop = chrono::high_resolution_clock::now();
     duration = chrono::duration_cast<chrono::milliseconds>(stop - start);
     cout << "Initialization of cache took " << duration.count() << " milliseconds." << endl;

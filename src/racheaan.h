@@ -18,17 +18,9 @@ namespace racheaan
         /**
          * @brief Construct a new RacheAAN encryption scheme object.
          * 
-         * @param poly_modulus_degree the degree of the polynomial modulus (8192 by default)
          * @param init_cache_size the initial number of ciphertexts to be cached (10 by default)
          */
-        Rache(size_t poly_modulus_degree = 8192, int init_cache_size = 10);
-
-        /**
-         * @brief Construct a new RacheAAN encryption scheme object with default 8192 polynomial modulus.
-         * 
-         * @param init_cache_size the initial number of ciphertexts to be cached
-         */
-        Rache(int init_cache_size);
+        Rache(int init_cache_size = 10);
 
         /**
          * @brief Encrypts a value using the Rache scheme, storing the result in the destination parameter.

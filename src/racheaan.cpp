@@ -5,12 +5,13 @@ using namespace racheaan;
 
 namespace racheaan 
 {
-    Rache::Rache(size_t poly_modulus_degree, int init_cache_size) 
+    Rache::Rache(int init_cache_size) 
     {
         // vector should be initialized with a size so we can parallelize
         radixes = std::vector<Plaintext>(init_cache_size);
 
         EncryptionParameters params(scheme_type::ckks);
+        size_t poly_modulus_degree = 8192;
         params.set_poly_modulus_degree(poly_modulus_degree);
         params.set_coeff_modulus(CoeffModulus::Create(poly_modulus_degree, { 60, 40, 40, 60 }));
         scale = pow(2.0, 40);
@@ -50,10 +51,6 @@ namespace racheaan
                 radixes[i] = radix_plain;
             }
         });
-    }
-
-    Rache::Rache(int init_cache_size) : Rache(8192, init_cache_size)
-    {
     }
 
     void Rache::encrypt(double value, Ciphertext &destination) 
