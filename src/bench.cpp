@@ -6,7 +6,7 @@ int main()
 {
     int selection = 0;
     cout << "Choose a scheme to benchmark." << endl;
-    cout << "[1 - CKKS | 2 - BFV]: ";
+    cout << "[1 - CKKS | 2 - BFV | 3 - Stream]: ";
     cin >> selection;
     switch(selection) 
     {
@@ -16,6 +16,10 @@ int main()
 
         case 2:
             bfv_bench();
+            break;
+
+        case 3:
+            cipher_stream();
             break;
 
         default:

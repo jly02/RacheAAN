@@ -15,6 +15,7 @@ target_sources(benchmarks
         bench.cpp
         CKKSTest.cpp 
         BFVTest.cpp
+        CipherStream.cpp
         racheal.cpp
 )
 if(TARGET SEAL::seal)
