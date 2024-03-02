@@ -56,7 +56,7 @@ namespace racheaan
         seal::CKKSEncoder* encoder;
         double scale;
     };
-}
+} // namespace racheaan
 
 #endif
 
