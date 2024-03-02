@@ -2,10 +2,10 @@
 #include <complex>
 #include "seal/seal.h"
 
-#ifndef RACHEAAN_H
-#define RACHEAAN_H
+#ifndef RACHEAL_H
+#define RACHEAL_H
 
-namespace racheaan
+namespace racheal
 {
     /**
      * Rache allows the user to customize the poly_modulus_degree and scale
@@ -48,7 +48,7 @@ namespace racheaan
         seal::CKKSEncoder* encoder;
         double scale;
     };
-} // namespace racheaan
+} // namespace racheal
 
 #endif
 

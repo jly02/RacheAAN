@@ -15,7 +15,7 @@ target_sources(benchmarks
         bench.cpp
         CKKSTest.cpp 
         BFVTest.cpp
-        racheaan.cpp
+        racheal.cpp
 )
 if(TARGET SEAL::seal)
     target_link_libraries(benchmarks PRIVATE SEAL::seal)

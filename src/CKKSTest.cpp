@@ -1,11 +1,11 @@
 #include <iostream>
 #include "seal/seal.h"
-#include "racheaan.h"
+#include "racheal.h"
 #include "bench.h"
 
 using namespace std;
 using namespace seal;
-using namespace racheaan;
+using namespace racheal;
 
 // print randomized array values + after decryption
 const bool PRINT = true;

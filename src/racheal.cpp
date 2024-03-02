@@ -1,9 +1,9 @@
-#include "racheaan.h"
+#include "racheal.h"
 
 using namespace seal;
-using namespace racheaan;
+using namespace racheal;
 
-namespace racheaan 
+namespace racheal
 {
     Rache::Rache(int init_cache_size) 
     {
@@ -84,4 +84,4 @@ namespace racheaan
     {
         dec->decrypt(encrypted, destination);
     }
-} // namespace racheaan
+} // namespace racheal
