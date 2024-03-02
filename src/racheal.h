@@ -1,9 +1,9 @@
+#ifndef RACHEAL_H
+#define RACHEAL_H
+
 #include <stddef.h>
 #include <complex>
 #include "seal/seal.h"
-
-#ifndef RACHEAL_H
-#define RACHEAL_H
 
 namespace racheal
 {
@@ -50,8 +50,6 @@ namespace racheal
     };
 } // namespace racheal
 
-#endif
-
 /**
  * @brief Parallelize a basic for loop, should not be used for anything
  *        requiring concurrent access to the same object in any way.
@@ -63,8 +61,7 @@ namespace racheal
  * (excluded)
  * @param use_threads enable / disable threads.
  */
-static
-void parallel_for(unsigned nb_elements,
+inline void parallel_for(unsigned nb_elements,
                   std::function<void (int start, int end)> functor,
                   bool use_threads = true)
 {
@@ -105,3 +102,5 @@ void parallel_for(unsigned nb_elements,
         std::for_each(my_threads.begin(), my_threads.end(), std::mem_fn(&std::thread::join));
     }
 }
+
+#endif

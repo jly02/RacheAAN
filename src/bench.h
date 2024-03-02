@@ -1,3 +1,6 @@
+#ifndef BENCH_H
+#define BENCH_H
+
 #include "seal/seal.h"
 
 void ckks_bench();
@@ -39,3 +42,5 @@ inline std::string uint64_to_hex_string(std::uint64_t value)
 {
     return seal::util::uint_to_hex_string(&value, std::size_t(1));
 }
+
+#endif
