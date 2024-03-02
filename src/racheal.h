@@ -61,9 +61,9 @@ namespace racheal
  * (excluded)
  * @param use_threads enable / disable threads.
  */
-inline void parallel_for(unsigned nb_elements,
-                  std::function<void (int start, int end)> functor,
-                  bool use_threads = true)
+static void parallel_for(unsigned nb_elements,
+                         std::function<void (int start, int end)> functor,
+                         bool use_threads = true)
 {
     // -------
     unsigned nb_threads_hint = std::thread::hardware_concurrency();
