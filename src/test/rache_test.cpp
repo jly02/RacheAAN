@@ -4,6 +4,7 @@
 using namespace racheaan;
 
 namespace rachetest {
+    // tests encryption of small values works without errors
     TEST(RacheEncryptionTest, HandlesSmallValues) 
     {
         Rache rache;
