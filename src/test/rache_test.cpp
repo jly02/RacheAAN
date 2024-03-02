@@ -1,7 +1,7 @@
 #include "gtest/gtest.h"
-#include "racheaan.h"
+#include "racheal.h"
 
-using namespace racheaan;
+using namespace racheal;
 
 namespace rachetest {
     // tests encryption of small values works without errors
