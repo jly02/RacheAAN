@@ -9,6 +9,7 @@ namespace racheal
     {
         // vector should be initialized with a size so we can parallelize
         radixes = std::vector<Plaintext>(init_cache_size);
+        cache_size = init_cache_size;
 
         EncryptionParameters params(scheme_type::ckks);
         size_t poly_modulus_degree = 8192;
@@ -55,6 +56,14 @@ namespace racheal
 
     void Rache::encrypt(double value, Ciphertext &destination) 
     {
+        // shouldn't encrypt anything larger than 2^cache_size - 1
+        if (value > pow(2.0, cache_size) - 1)
+        {
+            throw std::invalid_argument("Value to encrypt cannot be larger than " + 
+                                        std::to_string(pow(2.0, cache_size) - 1) + 
+                                        ", got: " + std::to_string(value));
+        }
+
         // setting up indexed radixes
         int digits = floor(log2(value));
         int idx[digits];

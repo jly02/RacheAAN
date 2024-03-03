@@ -12,6 +12,6 @@ namespace rachetest {
         EXPECT_NO_THROW(rache.encrypt(   1, destination));
         EXPECT_NO_THROW(rache.encrypt(  10, destination));
         EXPECT_NO_THROW(rache.encrypt( 500, destination));
-        EXPECT_NO_THROW(rache.encrypt(1024, destination));
+        EXPECT_NO_THROW(rache.encrypt(1023, destination));
     }
 } // namespace rachetest

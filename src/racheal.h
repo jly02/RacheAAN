@@ -46,6 +46,7 @@ namespace racheal
         seal::Evaluator* eval;
         seal::Decryptor* dec;
         seal::CKKSEncoder* encoder;
+        int cache_size;
         double scale;
     };
 } // namespace racheal
