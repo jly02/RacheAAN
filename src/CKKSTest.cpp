@@ -64,7 +64,9 @@ void ckks_bench() {
     int random_arr[SIZE];
     initialize(random_arr, SIZE, MIN_VAL, MAX_VAL, PRINT);
 
+    cout << "=========================================" << endl;
     cout << "Encrypting random array with pure CKKS..." << endl;
+    cout << "=========================================" << endl;
 
     Plaintext plain;
     Ciphertext cipher;
@@ -76,18 +78,39 @@ void ckks_bench() {
     }
     // timing this small test
     auto stop = chrono::high_resolution_clock::now();
-    auto duration = chrono::duration_cast<chrono::milliseconds>(stop - start);
-    cout << "Encryption of " << SIZE << " numbers in CKKS took " << duration.count() << " milliseconds." << endl;
+    auto duration = chrono::duration_cast<chrono::microseconds>(stop - start);
+    cout << "Encryption of " << SIZE << " numbers in CKKS took " << duration.count() << " microseconds." << endl;
+
+    // saving for later calculation
+    int encrypt_time = duration.count();
+
+    // timing some number of additions
+    Plaintext plain_one;
+    encoder.encode(1, scale, plain_one);
+    Ciphertext cipher_one;
+    encryptor.encrypt(plain_one, cipher_one);
+
+    start = chrono::high_resolution_clock::now();
+    for (int i = 0; i < SIZE; i++) {
+        evaluator.add_inplace(cipher_one, cipher_one);
+    }
+    stop = chrono::high_resolution_clock::now();
+    duration = chrono::duration_cast<chrono::microseconds>(stop - start);
+    cout << SIZE << " fully-homomorphic additions in CKKS took " << duration.count() << " microseconds (" 
+         << ((double) duration.count() / encrypt_time) * 100 << "\% of encryption time)." << endl;
 
     // Rache timing
+    cout << endl;
+    cout << "================================" << endl;
     cout << "Testing same array with Rache..." << endl;
+    cout << "================================" << endl;
 
     // timing initialization
     start = chrono::high_resolution_clock::now();
     Rache rache(scheme_type::ckks, INIT_CACHE_SIZE);
     stop = chrono::high_resolution_clock::now();
-    duration = chrono::duration_cast<chrono::milliseconds>(stop - start);
-    cout << "Initialization of cache took " << duration.count() << " milliseconds." << endl;
+    duration = chrono::duration_cast<chrono::microseconds>(stop - start);
+    cout << "Initialization of cache took " << duration.count() << " microseconds." << endl;
     
     // Store ciphertexts to check output later
     Ciphertext ctxt[SIZE];
@@ -98,8 +121,9 @@ void ckks_bench() {
         rache.encrypt(random_arr[i], ctxt[i]);
     }
     stop = chrono::high_resolution_clock::now();
-    duration = chrono::duration_cast<chrono::milliseconds>(stop - start);
-    cout << "Encryption of " << SIZE << " numbers in Rache took " << duration.count() << " milliseconds." << endl;
+    duration = chrono::duration_cast<chrono::microseconds>(stop - start);
+    cout << "Encryption of " << SIZE << " numbers in Rache took " << duration.count() << " microseconds ("
+         << ((double) duration.count() / encrypt_time) * 100 << "\% of CKKS encryption time)." << endl;
 
     if(PRINT) {
         // print decrypted ciphertexts

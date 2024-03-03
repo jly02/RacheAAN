@@ -38,14 +38,22 @@ namespace racheal {
         void decrypt(seal::Ciphertext &encrypted, seal::Plaintext &destination);
 
     private:
+        // stores plaintexts for base ctxt construction
         std::vector<seal::Plaintext> radixes;
-        seal::Ciphertext one_base;
-        seal::Ciphertext one_sub;
+
+        // starting number of radixes to be cached
+        int cache_size;
+
+        // base cipher used to construct new ctxts
+        seal::Ciphertext zero;
+
+        // should be set in every scheme
         seal::Encryptor* enc;
         seal::Evaluator* eval;
         seal::Decryptor* dec;
+
+        // only used when scheme set to CKKS
         seal::CKKSEncoder* encoder;
-        int cache_size;
         double scale;
     };
 } // namespace racheal

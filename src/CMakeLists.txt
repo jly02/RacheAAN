@@ -9,6 +9,8 @@ find_package(SEAL 4.1.1 EXACT REQUIRED)
 
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/bin)
 
+set(DSEAL_THROW_ON_TRANSPARENT_CIPHERTEXT OFF)
+
 add_executable(benchmarks)
 target_sources(benchmarks 
     PRIVATE 

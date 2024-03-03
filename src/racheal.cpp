@@ -33,10 +33,9 @@ namespace racheal {
         encoder = new CKKSEncoder(context);
 
         // generate base cipher and subtraction cipher
-        Plaintext one_plain;
-        encoder->encode(1, scale, one_plain);
-        enc->encrypt(one_plain, one_base);
-        enc->encrypt(one_plain, one_sub);
+        Plaintext zero_plain;
+        encoder->encode(0, scale, zero_plain);
+        enc->encrypt(zero_plain, zero);
 
         // parallelize initialization, not necessary but minor
         // performance benefits can be gained
@@ -68,16 +67,13 @@ namespace racheal {
             }
         });
 
-        // start with he(1)
-        destination = one_base;
+        // start with he(0)
+        destination = zero;
         for (int k = 0; k <= digits; k++) {   
             for (int j = 1; j <= idx[k]; j++) {
                 eval->add_plain_inplace(destination, radixes[k]);
             }
         }
-
-        // subtract he(1)
-        eval->sub_inplace(destination, one_sub);
     }
 
     void Rache::decrypt(Ciphertext &encrypted, Plaintext &destination) {
