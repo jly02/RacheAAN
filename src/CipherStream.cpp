@@ -112,12 +112,12 @@ void cipher_stream()
 
     srand(time(0));
 
-    int rand_max = 5;
+    int rand_max = 1;
     int rand_min = 1;
 
     // generate some stuff
     for(int i = 0; i < 10; i++) {
-        cout << (rand() + rand_min) % rand_max << " ";
+        cout << (rand() % rand_max) + rand_min << " ";
     }
 
     cout << endl;
@@ -127,7 +127,7 @@ void cipher_stream()
     // add some noise to coefficients?
     for (int i = 0; i < iters; i++) 
     {
-        data[i] += ((rand() + rand_min) % rand_max);
+        data[i] +=  100;//(rand() % rand_max) + rand_min;
 
         if (PRINT)
         {
