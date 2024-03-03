@@ -18,7 +18,7 @@ namespace racheal
         /**
          * @brief Construct a new RacheAAN encryption scheme object.
          * 
-         * @param scheme the encryption scheme to be used (options: BFV, BGV, CKKS)
+         * @param scheme the encryption scheme to be used (BFV, BGV, CKKS)
          * @param init_cache_size the initial number of ciphertexts to be cached (10 by default)
          */
         Rache(seal::scheme_type scheme, int init_cache_size = 10);
