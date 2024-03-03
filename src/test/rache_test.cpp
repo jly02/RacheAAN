@@ -7,7 +7,7 @@ namespace rachetest {
     // tests encryption of small values works without errors
     TEST(RacheEncryptionTest, HandlesSmallValues) 
     {
-        Rache rache;
+        Rache rache(seal::scheme_type::ckks);
         seal::Ciphertext destination;
         EXPECT_NO_THROW(rache.encrypt(   1, destination));
         EXPECT_NO_THROW(rache.encrypt(  10, destination));
