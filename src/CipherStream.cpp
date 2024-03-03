@@ -30,8 +30,7 @@ const size_t POLY_MODULUS_DEGREE = 8192;
 /**
  * Looking at Ciphertext data.
  */
-void cipher_stream()
-{
+void cipher_stream() {
     // set up params
     EncryptionParameters params(scheme_type::ckks);
     params.set_poly_modulus_degree(POLY_MODULUS_DEGREE);
@@ -94,10 +93,8 @@ void cipher_stream()
     size_t iters = arr1.size();
 
     // print first few coefficients
-    for (int i = 0; i < iters; i++) 
-    {
-        if (PRINT) 
-        {
+    for (int i = 0; i < iters; i++) {
+        if (PRINT) {
             cout << arr1[i] << " ";
         }
     }
@@ -125,12 +122,10 @@ void cipher_stream()
     Ciphertext::ct_coeff_type* data = seven_one.data();
 
     // add some noise to coefficients?
-    for (int i = 0; i < iters; i++) 
-    {
+    for (int i = 0; i < iters; i++) {
         data[i] +=  100;//(rand() % rand_max) + rand_min;
 
-        if (PRINT)
-        {
+        if (PRINT) {
             cout << seven_one.data()[i] << " ";
         }
     }

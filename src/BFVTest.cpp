@@ -21,8 +21,7 @@ const uint64_t MAX_VAL = 399;
 /**
  * Some benchmarks to test performance differences.
  */
-void bfv_bench()
-{
+void bfv_bench() {
     // set up params
     EncryptionParameters params(scheme_type::bfv);
     size_t poly_modulus_degree = 4096;
@@ -54,8 +53,7 @@ void bfv_bench()
     Ciphertext cipher;
     auto start = chrono::high_resolution_clock::now();
     // encode and encrypt small batch of numbers
-    for (int i = 0; i < SIZE; i ++) 
-    {   
+    for (int i = 0; i < SIZE; i ++) {   
         Plaintext plain(uint64_to_hex_string(random_arr[i]));
         encryptor.encrypt(plain, cipher);
     }
@@ -77,8 +75,7 @@ void bfv_bench()
 
     // perform large number of additions
     start = chrono::high_resolution_clock::now();
-    for (int i = 0; i < SIZE; i++)
-    {
+    for (int i = 0; i < SIZE; i++) {
         evaluator.add_plain_inplace(cipher_zero, plain_plus);
     }
     stop = chrono::high_resolution_clock::now();

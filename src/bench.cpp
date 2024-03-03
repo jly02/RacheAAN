@@ -2,14 +2,12 @@
 
 using namespace std;
 
-int main()
-{
+int main() {
     int selection = 0;
     cout << "Choose a scheme to benchmark." << endl;
     cout << "[1 - CKKS | 2 - BFV | 3 - Stream]: ";
     cin >> selection;
-    switch(selection) 
-    {
+    switch(selection) {
         case 1:
             ckks_bench();
             break;
