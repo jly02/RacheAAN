@@ -25,3 +25,5 @@ elseif(TARGET SEAL::seal_shared)
 else()
     message(FATAL_ERROR "Cannot find target SEAL::seal or SEAL::seal_shared")
 endif()
+
+add_subdirectory(test)
