@@ -18,5 +18,5 @@ The [Rache paper](https://dl.acm.org/doi/10.1145/3588920) that premiered in SIGM
   $ cd RacheAAN/src
   ```
 2. Run `git submodule init`, and then `git submodule update`. This will install vcpkg, which is required to build this repository.
-3. Run `cmake .` to setup the project, and `make` to build and/or run tests.
+3. Run `cmake .` to setup the project, and `make` to build the repository and/or run tests.
 4. A benchmarking executable is provided. To run this, simply use `./bin/benchmarks`.
