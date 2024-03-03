@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.13)
 
 set(CMAKE_TOOLCHAIN_FILE ${CMAKE_CURRENT_LIST_DIR}/vcpkg/scripts/buildsystems/vcpkg.cmake)
 
-project(RacheAAN VERSION 0.0.1 LANGUAGES CXX)
+project(RacheAL VERSION 0.0.1 LANGUAGES CXX)
 
 # Import Microsoft SEAL
 find_package(SEAL 4.1.1 EXACT REQUIRED)
