@@ -8,7 +8,7 @@ using namespace seal;
 using namespace racheal;
 
 // print randomized array values + after decryption
-const bool PRINT = true;
+const bool PRINT = false;
 
 // size of random array to benchmark
 const int SIZE = 20;
@@ -88,25 +88,58 @@ void cipher_stream()
     evaluator.sub_inplace(seven_one, one);
     evaluator.sub_inplace(seven_one, one);
 
-    // second seven, add some "randomness" by
-    // 7 = 1 + 2 + 4 + 4 - 2 - 2
-    evaluator.add(one, two, seven_two);
-    evaluator.add_inplace(seven_two, four);
-    evaluator.add_inplace(seven_two, four);
-    evaluator.sub_inplace(seven_two, two);
-    evaluator.sub_inplace(seven_two, two);
-
     // grab underlying ciphertext (polynomial coefficients)
     auto arr1 = seven_one.dyn_array();
-    auto arr2 = seven_two.dyn_array();
 
-    // print coefficients
-    for (int i = 0; i < arr1.size(); i++) 
+    size_t iters = arr1.size();
+
+    // print first few coefficients
+    for (int i = 0; i < iters; i++) 
     {
-        cout << arr1[i] - arr2[i] << " ";
+        if (PRINT) 
+        {
+            cout << arr1[i] << " ";
+        }
     }
 
     cout << endl;
+
+    Plaintext result;
+    vector<double> res;
+    decryptor.decrypt(seven_one, result);
+    encoder.decode(result, res);
+    cout << "Decrypted result before noise addition: " << res[0] << endl;
+
+    srand(time(0));
+
+    int rand_max = 5;
+    int rand_min = 1;
+
+    // generate some stuff
+    for(int i = 0; i < 10; i++) {
+        cout << (rand() + rand_min) % rand_max << " ";
+    }
+
+    cout << endl;
+
+    Ciphertext::ct_coeff_type* data = seven_one.data();
+
+    // add some noise to coefficients?
+    for (int i = 0; i < iters; i++) 
+    {
+        data[i] += ((rand() + rand_min) % rand_max);
+
+        if (PRINT)
+        {
+            cout << seven_one.data()[i] << " ";
+        }
+    }
+
+    cout << endl;
+
+    decryptor.decrypt(seven_one, result);
+    encoder.decode(result, res);
+    cout << "Decrypted result after noise addition: " << res[0] << endl;
 }
 
 
