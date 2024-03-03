@@ -59,9 +59,10 @@ namespace racheal
         // shouldn't encrypt anything larger than 2^cache_size - 1
         if (value > pow(2.0, cache_size) - 1)
         {
-            throw std::invalid_argument("Value to encrypt cannot be larger than " + 
-                                        std::to_string(pow(2.0, cache_size) - 1) + 
-                                        ", got: " + std::to_string(value));
+            throw std::invalid_argument(
+                "Value to encrypt cannot be larger than " + std::to_string(pow(2.0, cache_size) - 1) + 
+                    ", got: " + std::to_string(value)
+            );
         }
 
         // setting up indexed radixes
