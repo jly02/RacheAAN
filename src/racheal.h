@@ -17,9 +17,10 @@ namespace racheal {
          * @brief Construct a new RacheAAN encryption scheme object.
          * 
          * @param scheme the encryption scheme to be used (BFV, BGV, CKKS)
-         * @param init_cache_size the initial number of ciphertexts to be cached (10 by default)
+         * @param init_cache_size the initial number of ciphertexts to be cached (default 10)
+         * @param radix the radix to be used for ciphertext construction (default 2)
          */
-        Rache(seal::scheme_type scheme, size_t init_cache_size = 10);
+        Rache(seal::scheme_type scheme, size_t init_cache_size = 10, uint32_t radix = 2);
 
         /**
          * @brief Encrypts a value using the Rache scheme, storing the result in the destination parameter.
@@ -44,13 +45,19 @@ namespace racheal {
         // starting number of radixes to be cached
         size_t cache_size;
 
-        // base cipher used to construct new ctxts
-        seal::Ciphertext zero;
+        // the radix to be used, for practical reasons shouldn't be made too large
+        uint32_t r;
+
+        // the scheme being used for this Rache object
+        seal::scheme_type scheme;
 
         // should be set in every scheme
         seal::Encryptor* enc;
         seal::Evaluator* eval;
         seal::Decryptor* dec;
+
+        // base cipher used to construct new ctxts
+        seal::Ciphertext zero;
 
         // only used when scheme set to CKKS
         seal::CKKSEncoder* encoder;
@@ -103,6 +110,13 @@ static void parallel_for(unsigned nb_elements,
     if(use_threads) {
         std::for_each(my_threads.begin(), my_threads.end(), std::mem_fn(&std::thread::join));
     }
+}
+
+/**
+ * Helper function: computes a logarithm base r
+ */
+inline double log_base_r(double r, double x) {
+    return std::log(x) / std::log(r);
 }
 
 #endif

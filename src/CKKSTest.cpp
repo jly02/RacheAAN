@@ -8,7 +8,7 @@ using namespace seal;
 using namespace racheal;
 
 // print randomized array values + after decryption
-const bool PRINT = true;
+const bool PRINT = false;
 
 // size of random array to benchmark
 const int SIZE = 20;

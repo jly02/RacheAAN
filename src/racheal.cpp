@@ -4,7 +4,11 @@ using namespace seal;
 using namespace racheal;
 
 namespace racheal {
-    Rache::Rache(scheme_type scheme, size_t init_cache_size) {
+    Rache::Rache(scheme_type scheme, size_t init_cache_size, uint32_t radix) {
+        // save radix and scheme type first for later operations
+        this->scheme = scheme;
+        r = radix;
+
         // vector should be initialized with a size so we can parallelize
         radixes = std::vector<Plaintext>(init_cache_size);
         cache_size = init_cache_size;
@@ -13,7 +17,7 @@ namespace racheal {
         size_t poly_modulus_degree = 8192;
         params.set_poly_modulus_degree(poly_modulus_degree);
         params.set_coeff_modulus(CoeffModulus::Create(poly_modulus_degree, { 60, 40, 40, 60 }));
-        scale = pow(2.0, 40);
+        scale = pow(r, 40);
 
         // gather params
         SEALContext context(params);
@@ -43,7 +47,7 @@ namespace racheal {
             // encrypt powers of 2 up to init_cache_size 
             for(int i = start; i < end; i++) {
                 Plaintext radix_plain;
-                encoder->encode(pow(2, i), scale, radix_plain);
+                encoder->encode(pow(r, i), scale, radix_plain);
                 radixes[i] = radix_plain;
             }
         });
@@ -51,19 +55,19 @@ namespace racheal {
 
     void Rache::encrypt(double value, Ciphertext &destination) {
         // shouldn't encrypt anything larger than 2^cache_size - 1
-        if (value > pow(2.0, cache_size) - 1) {
+        if (value > pow(r, cache_size) - 1) {
             throw std::invalid_argument(
-                "Value to encrypt cannot be larger than " + std::to_string(pow(2.0, cache_size) - 1) + 
+                "Value to encrypt cannot be larger than " + std::to_string(pow(r, cache_size) - 1) + 
                     ", got: " + std::to_string(value)
             );
         }
 
         // setting up indexed radixes
-        int digits = floor(log2(value));
+        int digits = floor(log_base_r(r, value));
         int idx[digits];
         parallel_for(digits + 1, [&](int start, int end) {
             for (int j = start; j < end; j++) {
-                idx[j] = ((int) (value / pow(2.0, j))) % 2;
+                idx[j] = ((int) (value / pow(r, j))) % r;
             }
         });
 
