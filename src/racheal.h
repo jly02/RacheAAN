@@ -19,7 +19,7 @@ namespace racheal {
          * @param scheme the encryption scheme to be used (BFV, BGV, CKKS)
          * @param init_cache_size the initial number of ciphertexts to be cached (10 by default)
          */
-        Rache(seal::scheme_type scheme, int init_cache_size = 10);
+        Rache(seal::scheme_type scheme, size_t init_cache_size = 10);
 
         /**
          * @brief Encrypts a value using the Rache scheme, storing the result in the destination parameter.
@@ -42,7 +42,7 @@ namespace racheal {
         std::vector<seal::Plaintext> radixes;
 
         // starting number of radixes to be cached
-        int cache_size;
+        size_t cache_size;
 
         // base cipher used to construct new ctxts
         seal::Ciphertext zero;

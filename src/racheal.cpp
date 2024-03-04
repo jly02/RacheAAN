@@ -4,7 +4,7 @@ using namespace seal;
 using namespace racheal;
 
 namespace racheal {
-    Rache::Rache(scheme_type scheme, int init_cache_size) {
+    Rache::Rache(scheme_type scheme, size_t init_cache_size) {
         // vector should be initialized with a size so we can parallelize
         radixes = std::vector<Plaintext>(init_cache_size);
         cache_size = init_cache_size;
@@ -74,6 +74,8 @@ namespace racheal {
                 eval->add_plain_inplace(destination, radixes[k]);
             }
         }
+
+        // randomization should eventually go here
     }
 
     void Rache::decrypt(Ciphertext &encrypted, Plaintext &destination) {
