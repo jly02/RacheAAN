@@ -16,8 +16,17 @@ namespace racheal {
         EncryptionParameters params(scheme_type::ckks);
         size_t poly_modulus_degree = 8192;
         params.set_poly_modulus_degree(poly_modulus_degree);
-        params.set_coeff_modulus(CoeffModulus::Create(poly_modulus_degree, { 60, 40, 40, 60 }));
-        scale = pow(r, 40);
+        
+        // branch based on scheme type
+        switch (scheme) {
+            case scheme_type::ckks:
+                params.set_coeff_modulus(CoeffModulus::Create(poly_modulus_degree, { 60, 40, 40, 60 }));
+                scale = pow(r, 40);
+                break;
+
+            case scheme_type::bfv: case scheme_type::bgv:
+                params.set_coeff_modulus(CoeffModulus::BFVDefault(poly_modulus_degree));
+        }
 
         // gather params
         SEALContext context(params);
@@ -33,8 +42,10 @@ namespace racheal {
         eval = new Evaluator(context);
         dec  = new Decryptor(context, secret_key);
 
-        // and the encoder object
-        encoder = new CKKSEncoder(context);
+        // and the encoder object, if using CKKS
+        if (scheme == scheme_type::ckks) {
+            encoder = new CKKSEncoder(context);
+        }
 
         // generate base cipher and subtraction cipher
         Plaintext zero_plain;
