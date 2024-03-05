@@ -11,7 +11,7 @@ using namespace racheal;
 const bool PRINT = false;
 
 // size of random array to benchmark
-const int SIZE = 50;
+const int SIZE = 20;
 
 // number of initial ciphertexts to be cached
 const int INIT_CACHE_SIZE = 16;
@@ -21,7 +21,7 @@ const int INIT_CACHE_SIZE = 16;
 const uint64_t MIN_VAL = 1;
 
 // maximum size of values to be benchmarked
-const uint64_t MAX_VAL = 399;
+const uint64_t MAX_VAL = 1023;
 
 /**
  * Some benchmarks to test performance differences.
@@ -29,7 +29,7 @@ const uint64_t MAX_VAL = 399;
 void bfv_bench() {
     // set up params
     EncryptionParameters params(scheme_type::bfv);
-    size_t poly_modulus_degree = 4096;
+    size_t poly_modulus_degree = 8192;
     params.set_poly_modulus_degree(poly_modulus_degree);
     params.set_coeff_modulus(CoeffModulus::BFVDefault(poly_modulus_degree));
     params.set_plain_modulus(1024);
