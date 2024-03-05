@@ -90,9 +90,13 @@ void bfv_bench() {
 
     cout << "Encrypting random array with Rache..." << endl;
     start = chrono::high_resolution_clock::now();
-    for (int i = 0; i < SIZE; i ++) {
-        rache.encrypt(random_arr[i], ctxt[i]);
-    }
+
+    // parallel is obviously faster
+    parallel_for(SIZE, [&](int start, int end) {
+        for (int i = start; i < end; i ++) {
+            rache.encrypt(random_arr[i], ctxt[i]);
+        }
+    });
     stop = chrono::high_resolution_clock::now();
     duration = chrono::duration_cast<chrono::microseconds>(stop - start);
     cout << "Encryption of " << SIZE << " numbers in Rache took " << duration.count() << " microseconds ("
