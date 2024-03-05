@@ -14,7 +14,7 @@ const bool PRINT = true;
 const int SIZE = 20;
 
 // number of initial ciphertexts to be cached
-const int INIT_CACHE_SIZE = 16;
+const int INIT_CACHE_SIZE = 10;
 
 // minimum size of values to be benchmarked
 // Inv: MIN_VAL > 0

@@ -40,7 +40,10 @@ namespace racheal {
 
     private:
         // stores plaintexts for base ctxt construction
-        std::vector<seal::Plaintext> radixes;
+        std::vector<seal::Plaintext> radixes_plain;
+
+        // these ciphertexts are used for randomization
+        std::vector<seal::Ciphertext> radixes;
 
         // starting number of radixes to be cached
         size_t cache_size;

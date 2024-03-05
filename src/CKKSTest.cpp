@@ -14,7 +14,7 @@ const bool PRINT = false;
 const int SIZE = 20;
 
 // number of initial ciphertexts to be cached
-const int INIT_CACHE_SIZE = 16;
+const int INIT_CACHE_SIZE = 8;
 
 // minimum size of values to be benchmarked
 // Inv: MIN_VAL > 0
@@ -22,7 +22,7 @@ const int MIN_VAL = 1;
 
 // maximum size of values to be benchmarked
 // If n = INIT_CACHE_SIZE, then should have something like MAX_VAL < 2^n
-const int MAX_VAL = 20000;
+const int MAX_VAL = 255;
 
 // polynomial modulus degree to be kept consistent between pure CKKS and Rache
 const size_t POLY_MODULUS_DEGREE = 8192;

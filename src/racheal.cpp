@@ -10,7 +10,8 @@ namespace racheal {
         r = radix;
 
         // vector should be initialized with a size so we can parallelize
-        radixes = std::vector<Plaintext>(init_cache_size);
+        radixes_plain = std::vector<Plaintext>(init_cache_size);
+        radixes  = std::vector<Ciphertext>(init_cache_size);
         cache_size = init_cache_size;
 
         EncryptionParameters params(scheme);
@@ -64,13 +65,17 @@ namespace racheal {
                 if (scheme == scheme_type::ckks) {
                     Plaintext radix_plain;
                     encoder->encode(pow(r, i), scale, radix_plain);
-                    radixes[i] = radix_plain;
+                    radixes_plain[i] = radix_plain;
+                    enc->encrypt(radix_plain, radixes[i]);
                 } else {
                     Plaintext radix_plain(uint64_to_hex_string(pow(r, i)));
-                    radixes[i] = radix_plain;
+                    radixes_plain[i] = radix_plain;
+                    enc->encrypt(radix_plain, radixes[i]);
                 }
             }
         });
+
+        radixes.push_back(zero);
     }
 
     void Rache::encrypt(double value, Ciphertext &destination) {
@@ -95,11 +100,25 @@ namespace racheal {
         destination = zero;
         for (int k = 0; k <= digits; k++) {   
             for (int j = 1; j <= idx[k]; j++) {
-                eval->add_plain_inplace(destination, radixes[k]);
+                eval->add_plain_inplace(destination, radixes_plain[k]);
             }
         }
 
-        // randomization should eventually go here
+        // randomizing the constructed ciphertext
+        bool isSwap = rand() % 2;
+        if (isSwap) {
+            eval->add_inplace(destination, radixes[digits + 1]);
+        }
+
+        for (int j = 1; j < digits; j++) {
+            isSwap = rand() % 2;
+            if (isSwap) {
+                eval->add_inplace(destination, radixes[j]);
+                for (int k = 0; k < r; k++) {
+                    eval->sub_inplace(destination, radixes[j - 1]);
+                }
+            }
+        }
     }
 
     void Rache::decrypt(Ciphertext &encrypted, Plaintext &destination) {
