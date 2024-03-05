@@ -8,7 +8,7 @@ using namespace seal;
 using namespace racheal;
 
 // print randomized array values + after decryption
-const bool PRINT = false;
+const bool PRINT = true;
 
 // size of random array to benchmark
 const int SIZE = 20;
@@ -104,7 +104,7 @@ void bfv_bench() {
         for (int i = 0; i < SIZE; i++) {
             Plaintext rache_plain;
             rache.decrypt(ctxt[i], rache_plain);
-            output[i] = stoi(rache_plain.to_string());
+            output[i] = stoi(rache_plain.to_string(), 0, 16);
         }
 
         for (int i = 0; i < SIZE; i++) {
