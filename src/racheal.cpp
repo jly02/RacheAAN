@@ -26,6 +26,7 @@ namespace racheal {
 
             case scheme_type::bfv: case scheme_type::bgv:
                 params.set_coeff_modulus(CoeffModulus::BFVDefault(poly_modulus_degree));
+                break;
         }
 
         // gather params
@@ -42,24 +43,31 @@ namespace racheal {
         eval = new Evaluator(context);
         dec  = new Decryptor(context, secret_key);
 
-        // and the encoder object, if using CKKS
+        // set the encoder object, if using CKKS, then
+        // encrypt the base ciphertext he(0)
         if (scheme == scheme_type::ckks) {
+            Plaintext zero_plain;
             encoder = new CKKSEncoder(context);
+            encoder->encode(0, scale, zero_plain);
+            enc->encrypt(zero_plain, zero);
+        } else {
+            Plaintext zero_plain(uint64_to_hex_string(0));
+            enc->encrypt(zero_plain, zero);
         }
-
-        // generate base cipher and subtraction cipher
-        Plaintext zero_plain;
-        encoder->encode(0, scale, zero_plain);
-        enc->encrypt(zero_plain, zero);
 
         // parallelize initialization, not necessary but minor
         // performance benefits can be gained
         parallel_for(init_cache_size, [&](int start, int end) {
             // encrypt powers of 2 up to init_cache_size 
             for(int i = start; i < end; i++) {
-                Plaintext radix_plain;
-                encoder->encode(pow(r, i), scale, radix_plain);
-                radixes[i] = radix_plain;
+                if (scheme == scheme_type::ckks) {
+                    Plaintext radix_plain;
+                    encoder->encode(pow(r, i), scale, radix_plain);
+                    radixes[i] = radix_plain;
+                } else {
+                    Plaintext radix_plain(uint64_to_hex_string(pow(r, i)));
+                    radixes[i] = radix_plain;
+                }
             }
         });
     }

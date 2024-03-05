@@ -1,6 +1,7 @@
 #include <iostream>
 #include "seal/seal.h"
 #include "bench.h"
+#include "racheal.h"
 
 using namespace std;
 using namespace seal;
