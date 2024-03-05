@@ -15,8 +15,8 @@ The [Rache paper](https://dl.acm.org/doi/10.1145/3588920) that premiered in SIGM
   ```shell
   # Download source code and switch into directory
   $ git clone https://github.com/jly02/RacheAL.git
-  $ cd RacheAAN/src
+  $ cd RacheAL/src
   ```
 2. Run `git submodule init`, and then `git submodule update`. This will install vcpkg, which is required to build this repository.
 3. Run `cmake .` to setup the project, and `make` to build the repository and/or run tests.
-4. A benchmarking executable is provided. To run this, simply use `./bin/benchmarks`.
+4. A benchmarking executable is provided. To run this, simply use `./bin/benchmarks`. You may also notice that `test_suite` is also generated, you may use this to re-run the tests for the version at your compilation time.
