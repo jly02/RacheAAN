@@ -6,6 +6,7 @@ int main() {
     int selection = 0;
 
     do {
+        cout << endl;
         cout << "Choose a demo." << endl;
         cout << "| 1 - CKKS Benchmark |" << endl
              << "| 2 -- BFV Benchmark |" << endl

@@ -13,7 +13,7 @@ namespace racheal {
         radixes = std::vector<Plaintext>(init_cache_size);
         cache_size = init_cache_size;
 
-        EncryptionParameters params(scheme_type::ckks);
+        EncryptionParameters params(scheme);
         size_t poly_modulus_degree = 8192;
         params.set_poly_modulus_degree(poly_modulus_degree);
         
@@ -26,6 +26,7 @@ namespace racheal {
 
             case scheme_type::bfv: case scheme_type::bgv:
                 params.set_coeff_modulus(CoeffModulus::BFVDefault(poly_modulus_degree));
+                params.set_plain_modulus(1024);
                 break;
         }
 
