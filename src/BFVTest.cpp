@@ -67,12 +67,54 @@ void bfv_bench() {
     // timing this small test
     auto stop = chrono::high_resolution_clock::now();
     auto duration = chrono::duration_cast<chrono::microseconds>(stop - start);
-    cout << "Encryption of " << SIZE << " numbers in BFV took " << duration.count() << " microseconds." << endl;
+    cout << "Encryption of " << SIZE << " numbers in BFV took " << duration.count() << " microseconds (" 
+         << duration.count() / SIZE << " us per operation" << ")." << endl;
 
     // saving for later calculation
     int encrypt_time = duration.count();
 
-        // Rache timing
+        // timing some number of additions
+    Plaintext plain_one(uint64_to_hex_string(1));
+    Ciphertext cipher_one;
+    encryptor.encrypt(plain_one, cipher_one);
+
+    // fully homomorphic additions
+    start = chrono::high_resolution_clock::now();
+    for (int i = 0; i < SIZE; i++) {
+        evaluator.add_inplace(cipher_one, cipher_one);
+    }
+    stop = chrono::high_resolution_clock::now();
+    duration = chrono::duration_cast<chrono::microseconds>(stop - start);
+    cout << SIZE << " fully-homomorphic additions in BFV took " << duration.count() << " microseconds (" 
+         << ((double) duration.count() / encrypt_time) * 100 << "\% of encryption time, " 
+         << duration.count() / SIZE << " us per operation" << ")." << endl;
+
+    // ctxt - ptxt additions
+    start = chrono::high_resolution_clock::now();
+    for (int i = 0; i < SIZE; i++) {
+        evaluator.add_plain_inplace(cipher_one, plain_one);
+    }
+    stop = chrono::high_resolution_clock::now();
+    duration = chrono::duration_cast<chrono::microseconds>(stop - start);
+    cout << SIZE << " ctxt-ptxt additions in BFV took " << duration.count() << " microseconds (" 
+         << ((double) duration.count() / encrypt_time) * 100 << "\% of encryption time, " 
+         << duration.count() / SIZE << " us per operation" << ")." << endl;
+
+    // one fully homomorphic multiplication
+    start = chrono::high_resolution_clock::now();
+    evaluator.multiply_inplace(cipher_one, cipher_one);
+    stop = chrono::high_resolution_clock::now();
+    duration = chrono::duration_cast<chrono::microseconds>(stop - start);
+    cout << "One fully-homomorphic multiplication in BFV took " << duration.count() << " microseconds." << endl;
+
+    // one ctxt - ptxt multiplication
+    start = chrono::high_resolution_clock::now();
+    evaluator.multiply_plain_inplace(cipher_one, plain_one);
+    stop = chrono::high_resolution_clock::now();
+    duration = chrono::duration_cast<chrono::microseconds>(stop - start);
+    cout << "One ctxt-ptxt multiplication in BFV took " << duration.count() << " microseconds." << endl;
+
+    // Rache timing
     cout << endl;
     cout << "================================" << endl;
     cout << "Testing same array with Rache..." << endl;
