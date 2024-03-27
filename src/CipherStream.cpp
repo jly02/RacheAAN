@@ -39,6 +39,13 @@ void cipher_stream() {
     // also choose intermediate primes to be close to each other
     params.set_coeff_modulus(CoeffModulus::Create(POLY_MODULUS_DEGREE, { 60, 40, 40, 60 }));
 
+    auto coeffs = CoeffModulus::Create(POLY_MODULUS_DEGREE, { 60, 40, 40, 60 });
+    for (auto coeff : coeffs) {
+        cout << *(coeff.data()) << " ";
+    }
+
+    cout << endl;
+
     // scale stabilization with 2^40 scale, close to the intermediate primes
     double scale = pow(2.0, 40);
 
@@ -91,6 +98,7 @@ void cipher_stream() {
     auto arr1 = seven_one.dyn_array();
 
     size_t iters = arr1.size();
+    cout << "Size of CTXT is " << iters << endl;
 
     // print first few coefficients
     for (int i = 0; i < iters; i++) {
