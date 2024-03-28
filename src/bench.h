@@ -7,6 +7,8 @@ void ckks_bench();
 
 void bfv_bench();
 
+void bgv_bench();
+
 void cipher_stream();
 
 // initializes an array with random values
