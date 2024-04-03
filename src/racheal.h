@@ -14,7 +14,7 @@ namespace racheal {
     class Rache {
     public:
         /**
-         * @brief Construct a new RacheAAN encryption scheme object.
+         * @brief Construct a new RacheAL encryption scheme object.
          * 
          * @param scheme the encryption scheme to be used (BFV, BGV, CKKS)
          * @param init_cache_size the initial number of ciphertexts to be cached (default 10)
