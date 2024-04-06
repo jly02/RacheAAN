@@ -66,7 +66,7 @@ namespace che_utils {
     inline std::string uint64_to_hex_string(std::uint64_t value) {
         return seal::util::uint_to_hex_string(&value, std::size_t(1));
     }
-}
+} // namespace che_utils
 
 
 #endif
