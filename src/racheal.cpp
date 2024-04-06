@@ -1,7 +1,9 @@
 #include "racheal.h"
+#include "utils.h"
 
 using namespace seal;
 using namespace racheal;
+using namespace che_utils;
 
 namespace racheal {
     Rache::Rache(scheme_type scheme, size_t init_cache_size, uint32_t radix) {

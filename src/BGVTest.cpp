@@ -2,10 +2,12 @@
 #include "seal/seal.h"
 #include "bench.h"
 #include "racheal.h"
+#include "utils.h"
 
 using namespace std;
 using namespace seal;
 using namespace racheal;
+using namespace che_utils;
 
 // print randomized array values + after decryption
 const bool PRINT = true;

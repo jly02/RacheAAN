@@ -14,6 +14,7 @@ set(DSEAL_THROW_ON_TRANSPARENT_CIPHERTEXT OFF)
 add_executable(benchmarks)
 target_sources(benchmarks 
     PRIVATE 
+        utils.h
         bench.cpp
         CKKSTest.cpp 
         BFVTest.cpp
