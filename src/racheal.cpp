@@ -24,7 +24,7 @@ namespace racheal {
         switch (scheme) {
             case scheme_type::ckks:
                 params.set_coeff_modulus(CoeffModulus::Create(poly_modulus_degree, { 60, 40, 40, 60 }));
-                scale = pow(r, 40);
+                scale = pow(2, 40);
                 break;
 
             case scheme_type::bfv: case scheme_type::bgv:
