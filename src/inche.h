@@ -5,7 +5,7 @@
 #include <complex>
 #include "seal/seal.h"
 
-namespace iheal {
+namespace inche {
     /**
      * IncHE is a simple encryption idea that is based on a basic
      * incremental operation.
@@ -51,6 +51,6 @@ namespace iheal {
         seal::CKKSEncoder* encoder;
         double scale;
     };
-} // namespace iheal
+} // namespace inche
 
 #endif

@@ -21,6 +21,7 @@ target_sources(benchmarks
         BGVTest.cpp
         CipherStream.cpp
         racheal.cpp
+        inche.cpp 
 )
 if(TARGET SEAL::seal)
     target_link_libraries(benchmarks PRIVATE SEAL::seal)
