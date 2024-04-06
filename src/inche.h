@@ -7,23 +7,20 @@
 
 namespace iheal {
     /**
-     * Rache allows the user to customize the poly_modulus_degree and scale
-     * of the encryption scheme. Note that the poly_modulus_degree that is 
-     * chosen has a great effect on the performance of the scheme. 
+     * IncHE is a simple encryption idea that is based on a basic
+     * incremental operation.
      */
     class Inche {
     public:
         /**
-         * @brief Construct a new RacheAL encryption scheme object.
+         * @brief Construct a new IncHE encryption scheme object.
          * 
          * @param scheme the encryption scheme to be used (BFV, BGV, CKKS)
-         * @param init_cache_size the initial number of ciphertexts to be cached (default 10)
-         * @param radix the radix to be used for ciphertext construction (default 2)
          */
-        Inche(seal::scheme_type scheme, size_t init_cache_size = 10, uint32_t radix = 2);
+        Inche(seal::scheme_type scheme);
 
         /**
-         * @brief Encrypts a value using the Rache scheme, storing the result in the destination parameter.
+         * @brief Encrypts a value using the IncHE scheme, storing the result in the destination parameter.
          * 
          * @param value the value to be encrypted 
          * @param destination the ciphertext to overwrite with encrypted value
@@ -39,18 +36,6 @@ namespace iheal {
         void decrypt(seal::Ciphertext &encrypted, seal::Plaintext &destination);
 
     private:
-        // stores plaintexts for base ctxt construction
-        std::vector<seal::Plaintext> radixes_plain;
-
-        // these ciphertexts are used for randomization
-        std::vector<seal::Ciphertext> radixes;
-
-        // starting number of radixes to be cached
-        size_t cache_size;
-
-        // the radix to be used, for practical reasons shouldn't be made too large
-        uint32_t r;
-
         // the scheme being used for this Rache object
         seal::scheme_type scheme;
 
@@ -59,8 +44,8 @@ namespace iheal {
         seal::Evaluator* eval;
         seal::Decryptor* dec;
 
-        // base cipher used to construct new ctxts
-        seal::Ciphertext zero;
+        // base encryption is (m - 1) + one
+        seal::Ciphertext one;
 
         // only used when scheme set to CKKS
         seal::CKKSEncoder* encoder;
