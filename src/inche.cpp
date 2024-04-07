@@ -16,7 +16,7 @@ namespace inche {
         switch (scheme) {
             case scheme_type::ckks:
                 params.set_coeff_modulus(CoeffModulus::BFVDefault(poly_modulus_degree));
-                scale = sqrt(static_cast<double>(params.coeff_modulus().back().value()));
+                scale = pow(2, 55);
                 break;
 
             case scheme_type::bfv: case scheme_type::bgv:
