@@ -1,20 +1,22 @@
 #include <iostream>
 #include "seal/seal.h"
 #include "racheal.h"
+#include "inche.h"
 #include "bench.h"
 
 using namespace std;
 using namespace seal;
 using namespace racheal;
+using namespace inche;
 
 // print randomized array values + after decryption
-const bool PRINT = false;
+const bool PRINT = true;
 
 // size of random array to benchmark
 const int SIZE = 20;
 
 // number of initial ciphertexts to be cached
-const int INIT_CACHE_SIZE = 8;
+const int INIT_CACHE_SIZE = 10;
 
 // minimum size of values to be benchmarked
 // Inv: MIN_VAL > 0
@@ -22,7 +24,7 @@ const int MIN_VAL = 1;
 
 // maximum size of values to be benchmarked
 // If n = INIT_CACHE_SIZE, then should have something like MAX_VAL < 2^n
-const int MAX_VAL = 255;
+const int MAX_VAL = 511;
 
 // polynomial modulus degree to be kept consistent between pure CKKS and Rache
 const size_t POLY_MODULUS_DEGREE = 8192;
@@ -138,7 +140,7 @@ void ckks_bench() {
     Rache rache(scheme_type::ckks, INIT_CACHE_SIZE);
     stop = chrono::high_resolution_clock::now();
     duration = chrono::duration_cast<chrono::microseconds>(stop - start);
-    cout << "Initialization of cache took " << duration.count() << " microseconds." << endl;
+    cout << "Initialization of Rache took " << duration.count() << " microseconds." << endl;
     
     // Store ciphertexts to check output later
     Ciphertext ctxt[SIZE];
@@ -162,6 +164,50 @@ void ckks_bench() {
             vector<double> rache_decoded;
             encoder.decode(rache_plain, rache_decoded);
             output[i] = rache_decoded[0];
+        }
+
+        for (int i = 0; i < SIZE; i++) {
+            cout << output[i] << " ";
+        }
+
+        cout << endl;
+    }
+
+    // Inche timing
+    cout << endl;
+    cout << "================================" << endl;
+    cout << "Testing same array with Inche..." << endl;
+    cout << "================================" << endl;
+
+    // timing initialization
+    start = chrono::high_resolution_clock::now();
+    Inche inche(scheme_type::ckks);
+    stop = chrono::high_resolution_clock::now();
+    duration = chrono::duration_cast<chrono::microseconds>(stop - start);
+    cout << "Initialization of Inche took " << duration.count() << " microseconds." << endl;
+    
+    // Store ciphertexts to check output later
+    Ciphertext ctxti[SIZE];
+
+    cout << "Encrypting random array with Inche..." << endl;
+    start = chrono::high_resolution_clock::now();
+    for (int i = 0; i < SIZE; i ++) {
+        inche.encrypt(random_arr[i], ctxti[i]);
+    }
+    stop = chrono::high_resolution_clock::now();
+    duration = chrono::duration_cast<chrono::microseconds>(stop - start);
+    cout << "Encryption of " << SIZE << " numbers in Inche took " << duration.count() << " microseconds ("
+         << ((double) duration.count() / encrypt_time) * 100 << "\% of CKKS encryption time)." << endl;
+    
+    if(PRINT) {
+        // print decrypted ciphertexts
+        vector<double> output(SIZE);
+        for (int i = 0; i < SIZE; i++) {
+            Plaintext inche_plain;
+            inche.decrypt(ctxti[i], inche_plain);
+            vector<double> inche_decoded;
+            encoder.decode(inche_plain, inche_decoded);
+            output[i] = inche_decoded[0];
         }
 
         for (int i = 0; i < SIZE; i++) {

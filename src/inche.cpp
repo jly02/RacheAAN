@@ -4,11 +4,13 @@
 using namespace seal;
 using namespace che_utils;
 
-namespace iheal {
+namespace inche {
     Inche::Inche(scheme_type scheme) {
         EncryptionParameters params(scheme);
         size_t poly_modulus_degree = 8192;
         params.set_poly_modulus_degree(poly_modulus_degree);
+
+        this->scheme = scheme;
         
         // branch based on scheme type
         switch (scheme) {
@@ -42,10 +44,10 @@ namespace iheal {
         if (scheme == scheme_type::ckks) {
             Plaintext one_plain;
             encoder = new CKKSEncoder(context);
-            encoder->encode(0, scale, one_plain);
+            encoder->encode(1, scale, one_plain);
             enc->encrypt(one_plain, one);
         } else {
-            Plaintext one_plain(uint64_to_hex_string(0));
+            Plaintext one_plain(uint64_to_hex_string(1));
             enc->encrypt(one_plain, one);
         }
     }
@@ -65,4 +67,4 @@ namespace iheal {
     void Inche::decrypt(seal::Ciphertext &encrypted, seal::Plaintext &destination) {
         dec->decrypt(encrypted, destination);
     }
-} // namespace iheal
+} // namespace inche

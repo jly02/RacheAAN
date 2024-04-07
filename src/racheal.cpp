@@ -109,7 +109,7 @@ namespace racheal {
         // randomizing the constructed ciphertext
         bool isSwap = rand() % 2;
         if (isSwap) {
-            eval->add_inplace(destination, radixes[digits + 1]);
+            eval->add_inplace(destination, zero);
         }
 
         for (int j = 1; j < digits; j++) {
