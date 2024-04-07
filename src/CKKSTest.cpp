@@ -27,7 +27,7 @@ const int MIN_VAL = 1;
 const int MAX_VAL = 511;
 
 // polynomial modulus degree to be kept consistent between pure CKKS and Rache
-const size_t POLY_MODULUS_DEGREE = 8192;
+const size_t POLY_MODULUS_DEGREE = 16384;
 
 /**
  * Some benchmarks to test performance differences for CKKS.
@@ -39,10 +39,10 @@ void ckks_bench() {
 
     // choose 60 bit primes for first and last (last should just be at least as large as first)
     // also choose intermediate primes to be close to each other
-    params.set_coeff_modulus(CoeffModulus::Create(POLY_MODULUS_DEGREE, { 60, 40, 40, 60 }));
+    params.set_coeff_modulus(CoeffModulus::BFVDefault(POLY_MODULUS_DEGREE));
 
     // scale stabilization with 2^40 scale, close to the intermediate primes
-    double scale = pow(2.0, 40);
+    double scale = sqrt(static_cast<double>(params.coeff_modulus().back().value()));
 
     // context gathers params
     SEALContext context(params);

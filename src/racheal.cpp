@@ -17,14 +17,14 @@ namespace racheal {
         cache_size = init_cache_size;
 
         EncryptionParameters params(scheme);
-        size_t poly_modulus_degree = 8192;
+        size_t poly_modulus_degree = 16384;
         params.set_poly_modulus_degree(poly_modulus_degree);
         
         // branch based on scheme type
         switch (scheme) {
             case scheme_type::ckks:
-                params.set_coeff_modulus(CoeffModulus::Create(poly_modulus_degree, { 60, 40, 40, 60 }));
-                scale = pow(2, 40);
+                params.set_coeff_modulus(CoeffModulus::BFVDefault(poly_modulus_degree));
+                scale = sqrt(static_cast<double>(params.coeff_modulus().back().value()));
                 break;
 
             case scheme_type::bfv: case scheme_type::bgv:
