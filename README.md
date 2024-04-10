@@ -31,7 +31,7 @@ You have two options for installing Microsoft SEAL. The method you choose will g
 
 ### Installing from Source
 
-Head over to the [SEAL repo](https://github.com/microsoft/SEAL?tab=readme-ov-file#building-microsoft-seal), clone the repository, and follow the instructions in the repository to install SEAL locally or glocally on your device.
+Head over to the [SEAL repo](https://github.com/microsoft/SEAL?tab=readme-ov-file#building-microsoft-seal), clone the repository, and follow the instructions in the repository to install SEAL locally or globally on your device.
 
 ### Installing with `vcpkg` (Slower)
 
