@@ -47,6 +47,7 @@ After `"gtest"`, add `"seal"` so it now looks like
 ```json
 {
   "dependencies": [
+    "gtest",
     "seal"
   ]
 }
