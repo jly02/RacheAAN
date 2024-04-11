@@ -52,4 +52,4 @@ After `"gtest"`, add `"seal"` so it now looks like
   ]
 }
 ```
-And then you'll be able to continue from step 3 like normal. It should be noted that this method results in everything running far slower than it would than installing from source, and is not recommended.
+And then you'll be able to continue from step 3 like normal. It should be noted that this method results in everything running far slower than it would by installing from source, and is not recommended.
