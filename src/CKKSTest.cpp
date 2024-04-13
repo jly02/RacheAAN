@@ -13,7 +13,7 @@ using namespace inche;
 const bool PRINT = true;
 
 // size of random array to benchmark
-const int SIZE = 20;
+const int SIZE = 50;
 
 // number of initial ciphertexts to be cached
 const int INIT_CACHE_SIZE = 10;
