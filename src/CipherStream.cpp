@@ -1,10 +1,13 @@
 #include <iostream>
 #include "seal/seal.h"
+#include "seal/util/rlwe.h"
+#include "seal/util/polyarithsmallmod.h"
 #include "racheal.h"
 #include "bench.h"
 
 using namespace std;
 using namespace seal;
+using namespace seal::util;
 using namespace racheal;
 
 // print randomized array values + after decryption
@@ -129,13 +132,23 @@ void cipher_stream() {
 
     Ciphertext::ct_coeff_type* data = seven_one.data();
 
-    // add some noise to coefficients?
-    for (int i = 0; i < iters; i++) {
-        data[i] +=  100;//(rand() % rand_max) + rand_min;
+    // testing SEAL stuff
+    auto prng = UniformRandomGeneratorFactory::DefaultFactory()->create();
 
-        if (PRINT) {
-            cout << seven_one.data()[i] << " ";
-        }
+    auto &coeff_modulus = params.coeff_modulus();
+    auto &plain_modulus = params.plain_modulus();
+    size_t coeff_modulus_size = coeff_modulus.size();
+    size_t coeff_count = params.poly_modulus_degree();
+
+    auto c0 = seven_one.data(0);
+    auto c1 = seven_one.data(1);
+
+    auto noise(allocate_poly(coeff_count, coeff_modulus_size, MemoryManager::GetPool()));
+    for (int i = 0; i < 2; i++) {
+        SEAL_NOISE_SAMPLER(prng, params, noise.get());
+        RNSIter gaussian_iter(noise.get(), coeff_count);
+        RNSIter dst_iter(seven_one.data(i), coeff_count);
+        add_poly_coeffmod(gaussian_iter, dst_iter, coeff_modulus_size, coeff_modulus, dst_iter);
     }
 
     cout << endl;
