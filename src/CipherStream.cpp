@@ -119,18 +119,6 @@ void cipher_stream() {
     encoder.decode(result, res);
     cout << "Decrypted result before noise addition: " << res[0] << endl;
 
-    srand(time(0));
-
-    int rand_max = 1;
-    int rand_min = 1;
-
-    // generate some stuff
-    for(int i = 0; i < 10; i++) {
-        cout << (rand() % rand_max) + rand_min << " ";
-    }
-
-    cout << endl;
-
     Ciphertext::ct_coeff_type* data = seven_one.data();
 
     // testing SEAL stuff
