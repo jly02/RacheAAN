@@ -28,7 +28,7 @@ const int MIN_VAL = 1;
 const int MAX_VAL = 20000;
 
 // polynomial modulus degree to be kept consistent between pure CKKS and Rache
-const size_t POLY_MODULUS_DEGREE = 8192;
+const size_t POLY_MODULUS_DEGREE = 16384;
 
 /**
  * Looking at Ciphertext data.
@@ -48,6 +48,8 @@ void cipher_stream() {
     }
 
     cout << endl;
+
+    cout << "Max bit count: " << CoeffModulus::MaxBitCount(POLY_MODULUS_DEGREE) << endl;
 
     // scale stabilization with 2^40 scale, close to the intermediate primes
     double scale = pow(2.0, 40);
@@ -85,9 +87,8 @@ void cipher_stream() {
     Ciphertext four;
     encryptor.encrypt(plain_four, four);
 
-    // create sevens two different ways
+    // create seven
     Ciphertext seven_one;
-    Ciphertext seven_two;
 
     // first seven, add some "randomness" by
     // 7 = 1 + 2 + 4 + 2 - 1 - 1
@@ -140,6 +141,8 @@ void cipher_stream() {
     size_t coeff_modulus_size = coeff_modulus.size();
     size_t coeff_count = params.poly_modulus_degree();
 
+    cout << coeff_modulus_size << " " << coeff_count << endl;
+
     auto c0 = seven_one.data(0);
     auto c1 = seven_one.data(1);
 
@@ -160,7 +163,10 @@ void cipher_stream() {
     encoder.decode(result, res);
     cout << "Decrypted result after noise addition: " << res[0] << endl;
 
+    Plaintext rnd_plain;
+    encoder.encode(0, scale, rnd_plain);
     Ciphertext rnd;
+    encryptor.encrypt(rnd_plain, rnd);
 
     auto &context_data = *context.get_context_data(params.parms_id());
     auto ntt_tables = context_data.small_ntt_tables();
@@ -178,6 +184,18 @@ void cipher_stream() {
                 coeff_modulus[i], rnd.data(j) + i * coeff_count);
         }
     }
+
+    Plaintext plain_test;
+    Ciphertext cipher_test;
+    encoder.encode(7, scale, plain_test);
+    encryptor.encrypt(plain_test, cipher_test);
+    
+    evaluator.add_inplace(cipher_test, rnd);
+
+    Plaintext rnd_res;
+    decryptor.decrypt(cipher_test, rnd_res);
+    encoder.decode(rnd_res, res);
+    cout << "Decrypted after c' + rnd: " << res[0] << endl;
 }
 
 
