@@ -173,6 +173,10 @@ void cipher_stream() {
         }
     }
 
+    // transform to NTT domain?
+    RNSIter xi_iter(xi.get(), coeff_count);
+    ntt_negacyclic_harvey(xi_iter, coeff_modulus_size, ntt_tables);
+
     Plaintext plain_test;
     Ciphertext cipher_test;
     encoder.encode(7, scale, plain_test);
