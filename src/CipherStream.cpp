@@ -40,9 +40,9 @@ void cipher_stream() {
 
     // choose 60 bit primes for first and last (last should just be at least as large as first)
     // also choose intermediate primes to be close to each other
-    params.set_coeff_modulus(CoeffModulus::Create(POLY_MODULUS_DEGREE, { 60, 40, 40, 60 }));
+    params.set_coeff_modulus(CoeffModulus::BFVDefault(POLY_MODULUS_DEGREE));
 
-    auto coeffs = CoeffModulus::Create(POLY_MODULUS_DEGREE, { 60, 40, 40, 60 });
+    auto coeffs = CoeffModulus::BFVDefault(POLY_MODULUS_DEGREE);
     for (auto coeff : coeffs) {
         cout << *(coeff.data()) << " ";
     }
@@ -52,7 +52,7 @@ void cipher_stream() {
     cout << "Max bit count: " << CoeffModulus::MaxBitCount(POLY_MODULUS_DEGREE) << endl;
 
     // scale stabilization with 2^40 scale, close to the intermediate primes
-    double scale = pow(2.0, 40);
+    double scale = pow(2.0, 55);
 
     // context gathers params
     SEALContext context(params);
@@ -134,13 +134,6 @@ void cipher_stream() {
 
     cout << coeff_modulus_size << " " << coeff_count << endl;
 
-    for (size_t i = 0; i < coeff_modulus_size; i++) {
-        for (size_t j = 0; j < encrypted_size; j++) {
-            // Addition with e_0, e_1 is in non-NTT form
-            inverse_ntt_negacyclic_harvey(seven_one.data(j) + i * coeff_count, ntt_tables[i]);
-        }
-    }
-
     auto noise(allocate_poly(coeff_count, coeff_modulus_size, MemoryManager::GetPool()));
     for (size_t j = 0; j < encrypted_size; j++) {
         SEAL_NOISE_SAMPLER(prng, params, noise.get());
@@ -152,6 +145,7 @@ void cipher_stream() {
 
     cout << endl;
 
+    // this doesn't work
     decryptor.decrypt(seven_one, result);
     encoder.decode(result, res);
     cout << "Decrypted result after noise addition: " << res[0] << endl;
