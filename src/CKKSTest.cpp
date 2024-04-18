@@ -16,7 +16,7 @@ const bool PRINT = true;
 const int SIZE = 50;
 
 // number of initial ciphertexts to be cached
-const int INIT_CACHE_SIZE = 10;
+const int INIT_CACHE_SIZE = 30;
 
 // minimum size of values to be benchmarked
 // Inv: MIN_VAL > 0
@@ -24,10 +24,10 @@ const int MIN_VAL = 1;
 
 // maximum size of values to be benchmarked
 // If n = INIT_CACHE_SIZE, then should have something like MAX_VAL < 2^n
-const int MAX_VAL = 511;
+const int MAX_VAL = pow(2, 30);
 
 // polynomial modulus degree to be kept consistent between pure CKKS and Rache
-const size_t POLY_MODULUS_DEGREE = 16384;
+const size_t POLY_MODULUS_DEGREE = 32768;
 
 /**
  * Some benchmarks to test performance differences for CKKS.
@@ -41,8 +41,8 @@ void ckks_bench() {
     // also choose intermediate primes to be close to each other
     params.set_coeff_modulus(CoeffModulus::BFVDefault(POLY_MODULUS_DEGREE));
 
-    // scale stabilization with 2^40 scale, close to the intermediate primes
-    double scale = sqrt(static_cast<double>(params.coeff_modulus().back().value()));
+    // scale stabilization close to the intermediate primes
+    double scale = pow(2.0, 55);
 
     // context gathers params
     SEALContext context(params);

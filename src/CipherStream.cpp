@@ -28,7 +28,7 @@ const int MIN_VAL = 1;
 const int MAX_VAL = 20000;
 
 // polynomial modulus degree to be kept consistent between pure CKKS and Rache
-const size_t POLY_MODULUS_DEGREE = 16384;
+const size_t POLY_MODULUS_DEGREE = 32768;
 
 /**
  * Looking at Ciphertext data.
@@ -128,21 +128,26 @@ void cipher_stream() {
     auto &plain_modulus = params.plain_modulus();
     size_t coeff_modulus_size = coeff_modulus.size();
     size_t coeff_count = params.poly_modulus_degree();
+    auto &context_data = *context.get_context_data(params.parms_id());
+    auto ntt_tables = context_data.small_ntt_tables();
+    size_t encrypted_size = public_key.data().size();
 
     cout << coeff_modulus_size << " " << coeff_count << endl;
 
-    auto c0 = seven_one.data(0);
-    auto c1 = seven_one.data(1);
+    for (size_t i = 0; i < coeff_modulus_size; i++) {
+        for (size_t j = 0; j < encrypted_size; j++) {
+            // Addition with e_0, e_1 is in non-NTT form
+            inverse_ntt_negacyclic_harvey(seven_one.data(j) + i * coeff_count, ntt_tables[i]);
+        }
+    }
 
     auto noise(allocate_poly(coeff_count, coeff_modulus_size, MemoryManager::GetPool()));
-    SEAL_NOISE_SAMPLER(prng, params, noise.get());
-    for (size_t i = 0; i < coeff_modulus_size; i++) {
-        // c0 = as + noise
-        add_poly_coeffmod(
-            noise.get() + i * coeff_count, c0 + i * coeff_count, coeff_count, coeff_modulus[i],
-            c0 + i * coeff_count);
-        // (as + noise, a) -> (-(as + noise), a),
-        negate_poly_coeffmod(c0 + i * coeff_count, coeff_count, coeff_modulus[i], c0 + i * coeff_count);
+    for (size_t j = 0; j < encrypted_size; j++) {
+        SEAL_NOISE_SAMPLER(prng, params, noise.get());
+        RNSIter gaussian_iter(noise.get(), coeff_count);
+        ntt_negacyclic_harvey(gaussian_iter, coeff_modulus_size, ntt_tables);
+        RNSIter dst_iter(seven_one.data(j), coeff_count);
+        add_poly_coeffmod(gaussian_iter, dst_iter, coeff_modulus_size, coeff_modulus, dst_iter);
     }
 
     cout << endl;
@@ -155,10 +160,6 @@ void cipher_stream() {
     encoder.encode(0, scale, rnd_plain);
     Ciphertext rnd;
     encryptor.encrypt(rnd_plain, rnd);
-
-    auto &context_data = *context.get_context_data(params.parms_id());
-    auto ntt_tables = context_data.small_ntt_tables();
-    size_t encrypted_size = public_key.data().size();
 
     auto xi(allocate_poly(coeff_count, coeff_modulus_size, MemoryManager::GetPool()));
     sample_poly_ternary(prng, params, xi.get());
