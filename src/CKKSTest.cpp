@@ -93,6 +93,12 @@ void ckks_bench() {
     Ciphertext cipher_one;
     encryptor.encrypt(plain_one, cipher_one);
 
+    Plaintext p;
+    decryptor.decrypt(cipher_one, p);
+    vector<double> res1;
+    encoder.decode(p, res1);
+    cout << res1[0] << endl;
+
     // fully homomorphic additions
     start = chrono::high_resolution_clock::now();
     for (int i = 0; i < SIZE; i++) {

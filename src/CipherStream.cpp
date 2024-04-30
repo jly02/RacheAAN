@@ -134,55 +134,18 @@ void cipher_stream() {
 
     cout << coeff_modulus_size << " " << coeff_count << endl;
 
-    auto noise(allocate_poly(coeff_count, coeff_modulus_size, MemoryManager::GetPool()));
-    for (size_t j = 0; j < encrypted_size; j++) {
-        SEAL_NOISE_SAMPLER(prng, params, noise.get());
-        RNSIter gaussian_iter(noise.get(), coeff_count);
-        ntt_negacyclic_harvey(gaussian_iter, coeff_modulus_size, ntt_tables);
-        RNSIter dst_iter(seven_one.data(j), coeff_count);
-        add_poly_coeffmod(gaussian_iter, dst_iter, coeff_modulus_size, coeff_modulus, dst_iter);
-    }
+    cout << "crashes here" << endl;
 
-    cout << endl;
+    Ciphertext destination;
+    encrypt_zero_asymmetric(public_key, context, params.parms_id(), true, destination);
+    destination.scale() = plain_one.scale();
 
-    // this doesn't work
-    decryptor.decrypt(seven_one, result);
-    encoder.decode(result, res);
-    cout << "Decrypted result after noise addition: " << res[0] << endl;
+    cout << "crashes here1" << endl;
 
-    Plaintext rnd_plain;
-    encoder.encode(0, scale, rnd_plain);
-    Ciphertext rnd;
-    encryptor.encrypt(rnd_plain, rnd);
-
-    auto xi(allocate_poly(coeff_count, coeff_modulus_size, MemoryManager::GetPool()));
-    sample_poly_ternary(prng, params, xi.get());
-
-    // rnd[j] = xi * public_key[j]
-    for (size_t i = 0; i < coeff_modulus_size; i++) {
-        ntt_negacyclic_harvey(xi.get() + i * coeff_count, ntt_tables[i]);
-        for (size_t j = 0; j < encrypted_size; j++) {
-            dyadic_product_coeffmod(
-                xi.get() + i * coeff_count, public_key.data().data(j) + i * coeff_count, coeff_count,
-                coeff_modulus[i], rnd.data(j) + i * coeff_count);
-        }
-    }
-
-    // transform to NTT domain?
-    RNSIter xi_iter(xi.get(), coeff_count);
-    ntt_negacyclic_harvey(xi_iter, coeff_modulus_size, ntt_tables);
-
-    Plaintext plain_test;
-    Ciphertext cipher_test;
-    encoder.encode(7, scale, plain_test);
-    encryptor.encrypt(plain_test, cipher_test);
-    
-    evaluator.add_inplace(cipher_test, rnd);
-
-    Plaintext rnd_res;
-    decryptor.decrypt(cipher_test, rnd_res);
-    encoder.decode(rnd_res, res);
-    cout << "Decrypted after c' + rnd: " << res[0] << endl;
+    Plaintext dest_plain;
+    decryptor.decrypt(destination, dest_plain);
+    encoder.decode(dest_plain, res);
+    cout << res[0] << endl;
 }
 
 
