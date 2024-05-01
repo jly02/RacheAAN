@@ -24,7 +24,7 @@ const int MIN_VAL = 1;
 
 // maximum size of values to be benchmarked
 // If n = INIT_CACHE_SIZE, then should have something like MAX_VAL < 2^n
-const int MAX_VAL = pow(2, 30);
+const int MAX_VAL = 100000;
 
 // polynomial modulus degree to be kept consistent between pure CKKS and Rache
 const size_t POLY_MODULUS_DEGREE = 32768;
@@ -92,12 +92,6 @@ void ckks_bench() {
     encoder.encode(1, scale, plain_one);
     Ciphertext cipher_one;
     encryptor.encrypt(plain_one, cipher_one);
-
-    Plaintext p;
-    decryptor.decrypt(cipher_one, p);
-    vector<double> res1;
-    encoder.decode(p, res1);
-    cout << res1[0] << endl;
 
     // fully homomorphic additions
     start = chrono::high_resolution_clock::now();

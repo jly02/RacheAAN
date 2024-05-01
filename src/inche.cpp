@@ -1,7 +1,10 @@
 #include "inche.h"
 #include "utils.h"
+#include <seal/util/rlwe.h>
+#include <seal/util/polyarithsmallmod.h>
 
 using namespace seal;
+using namespace seal::util;
 using namespace che_utils;
 
 namespace inche {
@@ -26,25 +29,27 @@ namespace inche {
         }
 
         // gather params
-        SEALContext context(params);
+        context_ = new SEALContext(params);
 
         // generate keys
-        KeyGenerator keygen(context);
+        KeyGenerator keygen(*context_);
         SecretKey secret_key = keygen.secret_key();
         PublicKey public_key;
         keygen.create_public_key(public_key);
 
+        pk_ = public_key;
+
         // create the encryption objects
-        enc  = new Encryptor(context, public_key);
-        eval = new Evaluator(context);
-        dec  = new Decryptor(context, secret_key);
+        enc  = new Encryptor(*context_, public_key);
+        eval = new Evaluator(*context_);
+        dec  = new Decryptor(*context_, secret_key);
 
         // set the encoder object, if using CKKS, then
         // encrypt the base ciphertext he(0)
         if (scheme == scheme_type::ckks) {
             Plaintext one_plain;
-            encoder = new CKKSEncoder(context);
-            encoder->encode(1, scale, one_plain);
+            encoder = new CKKSEncoder(*context_);
+            encoder->encode(0, scale, one_plain);
             enc->encrypt(one_plain, one);
         } else {
             Plaintext one_plain(uint64_to_hex_string(1));
@@ -54,13 +59,34 @@ namespace inche {
 
     void Inche::encrypt(double value, seal::Ciphertext &destination) {
         destination = one;
+        Plaintext plain;
         if (scheme == scheme_type::ckks) {
-            Plaintext plain;
-            encoder->encode(value - 1, scale, plain);
+            encoder->encode(value, scale, plain);
             eval->add_plain_inplace(destination, plain);
         } else {
-            Plaintext plain(uint64_to_hex_string(value - 1));
+            Plaintext plain(uint64_to_hex_string(value));
             eval->add_plain_inplace(destination, plain);
+        }
+
+        auto context = *context_;
+        auto prng = UniformRandomGeneratorFactory::DefaultFactory()->create();
+        auto &parms = context.get_context_data(plain.parms_id())->parms();
+        auto &coeff_modulus = parms.coeff_modulus();
+        size_t coeff_modulus_size = coeff_modulus.size();
+        size_t coeff_count = parms.poly_modulus_degree();
+        auto &context_data = *context.get_context_data(parms.parms_id());
+        auto ntt_tables = context_data.small_ntt_tables();
+        size_t encrypted_size = pk_.data().size();
+
+        auto e(allocate_poly(coeff_count, coeff_modulus_size, MemoryManager::GetPool()));
+
+        // c[j]' = c[j] + e[j] (adding noise to ciphertext)
+        for (size_t j = 0; j < encrypted_size; j++) {
+            SEAL_NOISE_SAMPLER(prng, parms, e.get());
+            RNSIter gaussian_iter(e.get(), coeff_count);
+            ntt_negacyclic_harvey(gaussian_iter, coeff_modulus_size, ntt_tables);
+            RNSIter dst_iter(destination.data(j), coeff_count);
+            add_poly_coeffmod(gaussian_iter, dst_iter, coeff_modulus_size, coeff_modulus, dst_iter);
         }
     }
 

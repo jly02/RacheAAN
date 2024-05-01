@@ -121,31 +121,47 @@ void cipher_stream() {
 
     Ciphertext::ct_coeff_type* data = seven_one.data();
 
+    for (int i = 0; i < 10; i++) {
+        cout << data[i] << " ";
+    }
+    cout << endl;
+
     // testing SEAL stuff
     auto prng = UniformRandomGeneratorFactory::DefaultFactory()->create();
 
-    auto &coeff_modulus = params.coeff_modulus();
-    auto &plain_modulus = params.plain_modulus();
+    auto &parms = context.get_context_data(result.parms_id())->parms();
+    auto &coeff_modulus = parms.coeff_modulus();
+    auto &plain_modulus = parms.plain_modulus();
     size_t coeff_modulus_size = coeff_modulus.size();
-    size_t coeff_count = params.poly_modulus_degree();
-    auto &context_data = *context.get_context_data(params.parms_id());
+    size_t coeff_count = parms.poly_modulus_degree();
+    auto &context_data = *context.get_context_data(parms.parms_id());
     auto ntt_tables = context_data.small_ntt_tables();
     size_t encrypted_size = public_key.data().size();
 
     cout << coeff_modulus_size << " " << coeff_count << endl;
 
-    cout << "crashes here" << endl;
+    auto u(allocate_poly(coeff_count, coeff_modulus_size, MemoryManager::GetPool()));
+    for (size_t j = 0; j < encrypted_size; j++) {
+        SEAL_NOISE_SAMPLER(prng, params, u.get());
+        RNSIter gaussian_iter(u.get(), coeff_count);
+        ntt_negacyclic_harvey(gaussian_iter, coeff_modulus_size, ntt_tables);
+        RNSIter dst_iter(seven_one.data(j), coeff_count);
+        add_poly_coeffmod(gaussian_iter, dst_iter, coeff_modulus_size, coeff_modulus, dst_iter);
+    }
 
-    Ciphertext destination;
-    encrypt_zero_asymmetric(public_key, context, params.parms_id(), true, destination);
-    destination.scale() = plain_one.scale();
+    cout << "Is valid for parameters: " << is_valid_for(seven_one, context) << endl;
+    cout << "Is buffer valid: " << is_buffer_valid(seven_one) << endl;
+    cout << "Is metadata valid: " << is_metadata_valid_for(seven_one, context) << endl;
+    cout << "Is data valid: " << is_data_valid_for(seven_one, context) << endl;
 
-    cout << "crashes here1" << endl;
+    decryptor.decrypt(seven_one, result);
+    encoder.decode(result, res);
+    cout << "Decrypted result after noise addition: " << res[0] << endl;
 
-    Plaintext dest_plain;
-    decryptor.decrypt(destination, dest_plain);
-    encoder.decode(dest_plain, res);
-    cout << res[0] << endl;
+    for (int i = 0; i < 10; i++) {
+        cout << data[i] << " ";
+    }
+    cout << endl;
 }
 
 

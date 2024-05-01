@@ -39,6 +39,10 @@ namespace inche {
         // the scheme being used for this Rache object
         seal::scheme_type scheme;
 
+        // needed for randomization addition
+        seal::SEALContext* context_;
+        seal::PublicKey pk_;
+
         // should be set in every scheme
         seal::Encryptor* enc;
         seal::Evaluator* eval;
