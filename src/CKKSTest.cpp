@@ -4,6 +4,8 @@
 #include "inche.h"
 #include "bench.h"
 
+#define TEST_RACHE false
+
 using namespace std;
 using namespace seal;
 using namespace racheal;
@@ -129,6 +131,7 @@ void ckks_bench() {
     duration = chrono::duration_cast<chrono::microseconds>(stop - start);
     cout << "One ctxt-ptxt multiplication in CKKS took " << duration.count() << " microseconds." << endl;
 
+#if TEST_RACHE
     // Rache timing
     cout << endl;
     cout << "================================" << endl;
@@ -172,6 +175,7 @@ void ckks_bench() {
 
         cout << endl;
     }
+#endif
 
     // Inche timing
     cout << endl;

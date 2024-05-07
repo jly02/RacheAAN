@@ -140,14 +140,49 @@ void cipher_stream() {
 
     cout << coeff_modulus_size << " " << coeff_count << endl;
 
+    cout << endl;
+
+    auto start = chrono::high_resolution_clock::now();
     auto u(allocate_poly(coeff_count, coeff_modulus_size, MemoryManager::GetPool()));
+    auto stop = chrono::high_resolution_clock::now();
+    auto duration = chrono::duration_cast<chrono::microseconds>(stop - start);
+    cout << "Allocating polynomial space: " << duration.count() << " microseconds." << endl;
+
     for (size_t j = 0; j < encrypted_size; j++) {
+        cout << "===== ROUND " << j << " =====" << endl;
+
+        start = chrono::high_resolution_clock::now();
         SEAL_NOISE_SAMPLER(prng, params, u.get());
+        stop = chrono::high_resolution_clock::now();
+        duration = chrono::duration_cast<chrono::microseconds>(stop - start);
+        cout << "Sampling noise: " << duration.count() << " microseconds." << endl;
+
+        start = chrono::high_resolution_clock::now();
         RNSIter gaussian_iter(u.get(), coeff_count);
+        stop = chrono::high_resolution_clock::now();
+        duration = chrono::duration_cast<chrono::microseconds>(stop - start);
+        cout << "Seting up error iterator: " << duration.count() << " microseconds." << endl;
+
+        start = chrono::high_resolution_clock::now();
         ntt_negacyclic_harvey(gaussian_iter, coeff_modulus_size, ntt_tables);
+        stop = chrono::high_resolution_clock::now();
+        duration = chrono::duration_cast<chrono::microseconds>(stop - start);
+        cout << "NTT: " << duration.count() << " microseconds." << endl;
+
+        start = chrono::high_resolution_clock::now();
         RNSIter dst_iter(seven_one.data(j), coeff_count);
+        stop = chrono::high_resolution_clock::now();
+        duration = chrono::duration_cast<chrono::microseconds>(stop - start);
+        cout << "Seting up dest iterator: " << duration.count() << " microseconds." << endl;
+        
+        start = chrono::high_resolution_clock::now();
         add_poly_coeffmod(gaussian_iter, dst_iter, coeff_modulus_size, coeff_modulus, dst_iter);
+        stop = chrono::high_resolution_clock::now();
+        duration = chrono::duration_cast<chrono::microseconds>(stop - start);
+        cout << "Polynomial additions: " << duration.count() << " microseconds." << endl;
     }
+
+    cout << endl;
 
     cout << "Is valid for parameters: " << is_valid_for(seven_one, context) << endl;
     cout << "Is buffer valid: " << is_buffer_valid(seven_one) << endl;
