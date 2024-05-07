@@ -47,18 +47,18 @@ namespace inche {
         // set the encoder object, if using CKKS, then
         // encrypt the base ciphertext he(0)
         if (scheme == scheme_type::ckks) {
-            Plaintext one_plain;
+            Plaintext zero_plain;
             encoder = new CKKSEncoder(*context_);
-            encoder->encode(0, scale, one_plain);
-            enc->encrypt(one_plain, one);
+            encoder->encode(0, scale, zero_plain);
+            enc->encrypt(zero_plain, zero);
         } else {
-            Plaintext one_plain(uint64_to_hex_string(1));
-            enc->encrypt(one_plain, one);
+            Plaintext zero_plain(uint64_to_hex_string(1));
+            enc->encrypt(zero_plain, zero);
         }
     }
 
     void Inche::encrypt(double value, seal::Ciphertext &destination) {
-        destination = one; // one = zero
+        destination = zero;
         Plaintext plain;
 
         // ct(0) = pt(value)

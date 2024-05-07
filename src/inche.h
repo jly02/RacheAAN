@@ -48,8 +48,8 @@ namespace inche {
         seal::Evaluator* eval;
         seal::Decryptor* dec;
 
-        // base encryption is (m - 1) + one
-        seal::Ciphertext one;
+        // base encryption is m + zero
+        seal::Ciphertext zero;
 
         // only used when scheme set to CKKS
         seal::CKKSEncoder* encoder;
