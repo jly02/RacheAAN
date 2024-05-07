@@ -82,7 +82,6 @@ namespace inche {
 
         auto e(allocate_poly(coeff_count, coeff_modulus_size, MemoryManager::GetPool()));
 
-        // e[j] <-- R_2
         // c[j]' = c[j] + e[j] (adding noise to ciphertext)
         for (size_t j = 0; j < encrypted_size; j++) {
             SEAL_NOISE_SAMPLER(prng, parms, e.get()); // e[j] <-- R_2

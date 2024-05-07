@@ -162,6 +162,8 @@ void cipher_stream() {
         cout << data[i] << " ";
     }
     cout << endl;
+
+    cout << "Root: " << ntt_tables->get_root() << endl;
 }
 
 
