@@ -58,11 +58,13 @@ namespace inche {
     }
 
     void Inche::encrypt(double value, seal::Ciphertext &destination) {
-        destination = one;
+        destination = one; // one = zero
         Plaintext plain;
+
+        // ct(0) = pt(value)
         if (scheme == scheme_type::ckks) {
             encoder->encode(value, scale, plain);
-            eval->add_plain_inplace(destination, plain);
+            eval->add_plain_inplace(destination, plain); // takes about 5% of fresh enc
         } else {
             Plaintext plain(uint64_to_hex_string(value));
             eval->add_plain_inplace(destination, plain);
@@ -80,13 +82,16 @@ namespace inche {
 
         auto e(allocate_poly(coeff_count, coeff_modulus_size, MemoryManager::GetPool()));
 
+        // e[j] <-- R_2
         // c[j]' = c[j] + e[j] (adding noise to ciphertext)
         for (size_t j = 0; j < encrypted_size; j++) {
-            SEAL_NOISE_SAMPLER(prng, parms, e.get());
-            RNSIter gaussian_iter(e.get(), coeff_count);
-            ntt_negacyclic_harvey(gaussian_iter, coeff_modulus_size, ntt_tables);
-            RNSIter dst_iter(destination.data(j), coeff_count);
-            add_poly_coeffmod(gaussian_iter, dst_iter, coeff_modulus_size, coeff_modulus, dst_iter);
+            SEAL_NOISE_SAMPLER(prng, parms, e.get()); // e[j] <-- R_2
+            RNSIter gaussian_iter(e.get(), coeff_count); // should not be costly
+            ntt_negacyclic_harvey(gaussian_iter, coeff_modulus_size, ntt_tables); // ntt(e[j]) 
+            RNSIter dst_iter(destination.data(j), coeff_count); // should not be costly
+
+            // [c[j] + e[j]] mod coeff_modulus
+            add_poly_coeffmod(gaussian_iter, dst_iter, coeff_modulus_size, coeff_modulus, dst_iter); 
         }
     }
 
