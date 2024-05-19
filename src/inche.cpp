@@ -14,17 +14,17 @@ namespace inche {
         params.set_poly_modulus_degree(poly_modulus_degree);
 
         this->scheme = scheme;
+
+        params.set_coeff_modulus(CoeffModulus::BFVDefault(poly_modulus_degree));
         
         // branch based on scheme type
         switch (scheme) {
             case scheme_type::ckks:
-                params.set_coeff_modulus(CoeffModulus::BFVDefault(poly_modulus_degree));
                 scale = pow(2, 55);
                 break;
 
             case scheme_type::bfv: case scheme_type::bgv:
-                params.set_coeff_modulus(CoeffModulus::BFVDefault(poly_modulus_degree));
-                params.set_plain_modulus(1024);
+                params.set_plain_modulus(16384);
                 break;
         }
 

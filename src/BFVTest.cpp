@@ -3,11 +3,15 @@
 #include "bench.h"
 #include "racheal.h"
 #include "utils.h"
+#include "inche.h"
+
+#define TEST_RACHE false
 
 using namespace std;
 using namespace seal;
 using namespace racheal;
 using namespace che_utils;
+using namespace inche;
 
 // print randomized array values + after decryption
 const bool PRINT = true;
@@ -16,14 +20,14 @@ const bool PRINT = true;
 const int SIZE = 20;
 
 // number of initial ciphertexts to be cached
-const int INIT_CACHE_SIZE = 10;
+const int INIT_CACHE_SIZE = 14;
 
 // minimum size of values to be benchmarked
 // Inv: MIN_VAL > 0
 const uint64_t MIN_VAL = 1;
 
 // maximum size of values to be benchmarked
-const uint64_t MAX_VAL = 1023;
+const uint64_t MAX_VAL = pow(2, INIT_CACHE_SIZE);
 
 /**
  * Some benchmarks to test performance differences.
@@ -31,10 +35,10 @@ const uint64_t MAX_VAL = 1023;
 void bfv_bench() {
     // set up params
     EncryptionParameters params(scheme_type::bfv);
-    size_t poly_modulus_degree = 8192;
+    size_t poly_modulus_degree = 32768;
     params.set_poly_modulus_degree(poly_modulus_degree);
     params.set_coeff_modulus(CoeffModulus::BFVDefault(poly_modulus_degree));
-    params.set_plain_modulus(1024);
+    params.set_plain_modulus(16384);
 
     // gather context
     SEALContext context(params);
@@ -75,7 +79,7 @@ void bfv_bench() {
     // saving for later calculation
     int encrypt_time = duration.count();
 
-        // timing some number of additions
+    // timing some number of additions
     Plaintext plain_one(uint64_to_hex_string(1));
     Ciphertext cipher_one;
     encryptor.encrypt(plain_one, cipher_one);
@@ -115,7 +119,7 @@ void bfv_bench() {
     stop = chrono::high_resolution_clock::now();
     duration = chrono::duration_cast<chrono::microseconds>(stop - start);
     cout << "One ctxt-ptxt multiplication in BFV took " << duration.count() << " microseconds." << endl;
-
+#if TEST_RACHE
     // Rache timing
     cout << endl;
     cout << "================================" << endl;
@@ -149,6 +153,48 @@ void bfv_bench() {
             Plaintext rache_plain;
             rache.decrypt(ctxt[i], rache_plain);
             output[i] = stoi(rache_plain.to_string(), 0, 16);
+        }
+
+        for (int i = 0; i < SIZE; i++) {
+            cout << output[i] << " ";
+        }
+
+        cout << endl;
+    }
+#endif
+    // Inche timing
+    cout << endl;
+    cout << "================================" << endl;
+    cout << "Testing same array with Inche..." << endl;
+    cout << "================================" << endl;
+
+    // timing initialization
+    start = chrono::high_resolution_clock::now();
+    Inche inche(scheme_type::bfv);
+    stop = chrono::high_resolution_clock::now();
+    duration = chrono::duration_cast<chrono::microseconds>(stop - start);
+    cout << "Initialization of Inche took " << duration.count() << " microseconds." << endl;
+    
+    // Store ciphertexts to check output later
+    Ciphertext ctxti[SIZE];
+
+    cout << "Encrypting random array with Inche..." << endl;
+    start = chrono::high_resolution_clock::now();
+    for (int i = 0; i < SIZE; i++) {
+        inche.encrypt(random_arr[i], ctxti[i]);
+    }
+    stop = chrono::high_resolution_clock::now();
+    duration = chrono::duration_cast<chrono::microseconds>(stop - start);
+    cout << "Encryption of " << SIZE << " numbers in Inche took " << duration.count() << " microseconds ("
+         << ((double) duration.count() / encrypt_time) * 100 << "\% of BFV encryption time)." << endl;
+    
+    if(PRINT) {
+        // print decrypted ciphertexts
+        vector<double> output(SIZE);
+        for (int i = 0; i < SIZE; i++) {
+            Plaintext inche_plain;
+            inche.decrypt(ctxti[i], inche_plain);
+            output[i] = stoi(inche_plain.to_string(), 0, 16);
         }
 
         for (int i = 0; i < SIZE; i++) {

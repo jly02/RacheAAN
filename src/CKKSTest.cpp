@@ -195,7 +195,7 @@ void ckks_bench() {
 
     cout << "Encrypting random array with Inche..." << endl;
     start = chrono::high_resolution_clock::now();
-    for (int i = 0; i < SIZE; i ++) {
+    for (int i = 0; i < SIZE; i++) {
         inche.encrypt(random_arr[i], ctxti[i]);
     }
     stop = chrono::high_resolution_clock::now();

@@ -29,7 +29,7 @@ namespace racheal {
 
             case scheme_type::bfv: case scheme_type::bgv:
                 params.set_coeff_modulus(CoeffModulus::BFVDefault(poly_modulus_degree));
-                params.set_plain_modulus(1024);
+                params.set_plain_modulus(16384);
                 break;
         }
 
