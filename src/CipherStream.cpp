@@ -52,7 +52,7 @@ void cipher_stream() {
     cout << "Max bit count: " << CoeffModulus::MaxBitCount(POLY_MODULUS_DEGREE) << endl;
 
     // scale stabilization with 2^40 scale, close to the intermediate primes
-    double scale = pow(2.0, 55);
+    double scale = pow(2.0, log2(*(coeffs[2].data())));
 
     // context gathers params
     SEALContext context(params);
