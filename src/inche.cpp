@@ -8,19 +8,20 @@ using namespace seal::util;
 using namespace che_utils;
 
 namespace inche {
-    Inche::Inche(scheme_type scheme) {
+    Inche::Inche(scheme_type scheme, size_t poly_modulus_degree) {
         EncryptionParameters params(scheme);
-        size_t poly_modulus_degree = 32768;
         params.set_poly_modulus_degree(poly_modulus_degree);
 
         this->scheme = scheme;
 
-        params.set_coeff_modulus(CoeffModulus::BFVDefault(poly_modulus_degree));
+        
+        auto coeffs = CoeffModulus::BFVDefault(poly_modulus_degree);
+        params.set_coeff_modulus(coeffs);
         
         // branch based on scheme type
         switch (scheme) {
             case scheme_type::ckks:
-                scale = pow(2, 55);
+                scale = pow(2.0, log2(*(coeffs[2].data())));
                 break;
 
             case scheme_type::bfv: case scheme_type::bgv:

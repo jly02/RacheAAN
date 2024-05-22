@@ -41,10 +41,11 @@ void ckks_bench() {
 
     // choose 60 bit primes for first and last (last should just be at least as large as first)
     // also choose intermediate primes to be close to each other
-    params.set_coeff_modulus(CoeffModulus::BFVDefault(POLY_MODULUS_DEGREE));
+    auto coeffs = CoeffModulus::BFVDefault(POLY_MODULUS_DEGREE);
+    params.set_coeff_modulus(coeffs);
 
     // scale stabilization close to the intermediate primes
-    double scale = pow(2.0, 55);
+    double scale = pow(2.0, log2(*(coeffs[2].data())));
 
     // context gathers params
     SEALContext context(params);
@@ -185,7 +186,7 @@ void ckks_bench() {
 
     // timing initialization
     start = chrono::high_resolution_clock::now();
-    Inche inche(scheme_type::ckks);
+    Inche inche(scheme_type::ckks, POLY_MODULUS_DEGREE);
     stop = chrono::high_resolution_clock::now();
     duration = chrono::duration_cast<chrono::microseconds>(stop - start);
     cout << "Initialization of Inche took " << duration.count() << " microseconds." << endl;

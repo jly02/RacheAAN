@@ -16,8 +16,9 @@ namespace inche {
          * @brief Construct a new IncHE encryption scheme object.
          * 
          * @param scheme the encryption scheme to be used (BFV, BGV, CKKS)
+         * @param poly_modulus_degree the degree N in the polynomial ring Z_q/(X^N + 1)
          */
-        Inche(seal::scheme_type scheme);
+        Inche(seal::scheme_type scheme, size_t poly_modulus_degree = 32768);
 
         /**
          * @brief Encrypts a value using the IncHE scheme, storing the result in the destination parameter.
