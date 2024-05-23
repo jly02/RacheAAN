@@ -39,7 +39,7 @@ void datasets() {
     seal::Ciphertext ctxts[size];
     std::cout << "Done." << std::endl;
 
-    std::cout << "Running data... ";
+    std::cout << "Running data... " << std::endl;
     auto start = std::chrono::high_resolution_clock::now();
     for (int i = 0; i < size; i++) {
         inche.encrypt(vals[i], ctxts[i]);
