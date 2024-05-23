@@ -11,6 +11,8 @@ void bgv_bench();
 
 void cipher_stream();
 
+void datasets();
+
 // initializes an array with random values
 inline void initialize(int arr[], int size, int MIN_VAL, int MAX_VAL, bool PRINT) {
     srand(time(0));

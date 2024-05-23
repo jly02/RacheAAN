@@ -12,6 +12,7 @@ int main() {
              << "| 2 -- BFV Benchmark |" << endl
              << "| 3 -- BGV Benchmark |" << endl
              << "| 4 - Noise Gen Test |" << endl
+             << "| 5 -- Run Data Sets |" << endl
              << "| 0 ----- Exit Demos |" << endl 
              << "| Selection: ";
         cin >> selection;
@@ -30,6 +31,10 @@ int main() {
 
             case 4:
                 cipher_stream();
+                break;
+
+            case 5:
+                datasets();
                 break;
 
             default:
