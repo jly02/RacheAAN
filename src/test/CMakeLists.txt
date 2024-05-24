@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.13)
 
 # Find GoogleTest package
 find_package(GTest REQUIRED)
-find_package(SEAL 4.1.1 EXACT REQUIRED)
+find_package(SEAL 4.1.2 EXACT REQUIRED)
 
 # Set up test executable
 add_executable(test_suite)

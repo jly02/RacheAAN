@@ -5,7 +5,7 @@ set(CMAKE_TOOLCHAIN_FILE ${CMAKE_CURRENT_LIST_DIR}/vcpkg/scripts/buildsystems/vc
 project(RacheAL VERSION 0.0.1 LANGUAGES CXX)
 
 # Import Microsoft SEAL
-find_package(SEAL 4.1.1 EXACT REQUIRED)
+find_package(SEAL 4.1.2 EXACT REQUIRED)
 
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/bin)
 
