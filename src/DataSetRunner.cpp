@@ -41,7 +41,7 @@ void datasets() {
 
     // Test setup
     std::cout << "Setting up encryption objects... ";
-    seal::Ciphertext ctxts[size];
+    seal::Ciphertext ctxt;
     std::chrono::seconds duration;
     switch (scheme)
     {
@@ -77,7 +77,7 @@ void datasets() {
         auto start = std::chrono::high_resolution_clock::now();
         for (int i = 0; i < size; i++) {
             encoder.encode(vals[i], plain);
-            encryptor.encrypt(plain, ctxts[i]);
+            encryptor.encrypt(plain, ctxt);
         }
         auto stop = std::chrono::high_resolution_clock::now();
         duration = std::chrono::duration_cast<std::chrono::seconds>(stop - start);
@@ -90,7 +90,7 @@ void datasets() {
         std::cout << "Running data... " << std::endl;
         auto start = std::chrono::high_resolution_clock::now();
         for (int i = 0; i < size; i++) {
-            rache.encrypt(vals[i], ctxts[i]);
+            rache.encrypt(vals[i], ctxt);
         }
         auto stop = std::chrono::high_resolution_clock::now();
         duration = std::chrono::duration_cast<std::chrono::seconds>(stop - start);
@@ -103,7 +103,7 @@ void datasets() {
         std::cout << "Running data... " << std::endl;
         auto start = std::chrono::high_resolution_clock::now();
         for (int i = 0; i < size; i++) {
-            inche.encrypt(vals[i], ctxts[i]);
+            inche.encrypt(vals[i], ctxt);
         }
         auto stop = std::chrono::high_resolution_clock::now();
         duration = std::chrono::duration_cast<std::chrono::seconds>(stop - start);
