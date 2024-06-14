@@ -85,7 +85,7 @@ void datasets() {
     }
     case 2:
     {
-        Rache rache(seal::scheme_type::ckks, 32);
+        Rache rache(seal::scheme_type::ckks, 64);
 
         std::cout << "Running data... " << std::endl;
         auto start = std::chrono::high_resolution_clock::now();
