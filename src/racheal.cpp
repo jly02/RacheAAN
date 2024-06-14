@@ -112,7 +112,8 @@ namespace racheal {
             eval->add_inplace(destination, zero);
         }
 
-        for (int j = 1; j < digits; j++) {
+        __int128 m = pow(2.0, cache_size) - 1;
+        for (int j = 1; j < floor(log_base_r(r, m)); j++) {
             isSwap = rand() % 2;
             if (isSwap) {
                 eval->add_inplace(destination, radixes[j]);
