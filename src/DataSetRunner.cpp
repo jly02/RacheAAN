@@ -81,6 +81,7 @@ void datasets() {
         }
         auto stop = std::chrono::high_resolution_clock::now();
         duration = std::chrono::duration_cast<std::chrono::seconds>(stop - start);
+        break;
     }
     case 2:
     {
@@ -93,6 +94,7 @@ void datasets() {
         }
         auto stop = std::chrono::high_resolution_clock::now();
         duration = std::chrono::duration_cast<std::chrono::seconds>(stop - start);
+        break;
     }
     case 3:
     {
@@ -105,6 +107,7 @@ void datasets() {
         }
         auto stop = std::chrono::high_resolution_clock::now();
         duration = std::chrono::duration_cast<std::chrono::seconds>(stop - start);
+        break;
     }
     default:
         break;
