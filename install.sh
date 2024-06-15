@@ -17,5 +17,7 @@ sudo apt-get install curl zip unzip tar pkg-config
 
 # build new schemes
 cd ../RacheAL/src
+git submodule init
+git submodule update
 cmake .
 make
