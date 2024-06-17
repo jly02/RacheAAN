@@ -44,7 +44,7 @@ void cipher_stream() {
 
     auto coeffs = CoeffModulus::BFVDefault(POLY_MODULUS_DEGREE);
     for (auto coeff : coeffs) {
-        cout << *(coeff.data()) << " ";
+        cout << *(coeff.data()) << " (" << log2(*(coeff.data())) << ") ";
     }
 
     cout << endl;
