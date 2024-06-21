@@ -21,7 +21,7 @@ inline void initialize(int arr[], int size, int MIN_VAL, int MAX_VAL, bool PRINT
         if(MIN_VAL == MAX_VAL) {
             arr[i] = MIN_VAL;
         } else {
-            arr[i] = (rand() + MIN_VAL) % MAX_VAL;
+            arr[i] = std::max((rand() + MIN_VAL) % MAX_VAL, MIN_VAL);
         }
     }
 
