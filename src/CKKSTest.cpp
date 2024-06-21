@@ -12,10 +12,10 @@ using namespace racheal;
 using namespace inche;
 
 // print randomized array values + after decryption
-const bool PRINT = true;
+const bool PRINT = false;
 
 // size of random array to benchmark
-const int SIZE = 20;
+const int SIZE = 1024;
 
 // number of initial ciphertexts to be cached
 const int INIT_CACHE_SIZE = 4;
