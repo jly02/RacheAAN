@@ -4,7 +4,7 @@
 #include "inche.h"
 #include "bench.h"
 
-#define TEST_RACHE false
+#define TEST_RACHE true
 
 using namespace std;
 using namespace seal;
@@ -12,13 +12,13 @@ using namespace racheal;
 using namespace inche;
 
 // print randomized array values + after decryption
-const bool PRINT = true;
+const bool PRINT = false;
 
 // size of random array to benchmark
-const int SIZE = 50;
+const int SIZE = 1024;
 
 // number of initial ciphertexts to be cached
-const int INIT_CACHE_SIZE = 20;
+const int INIT_CACHE_SIZE = 4;
 
 // minimum size of values to be benchmarked
 // Inv: MIN_VAL > 0
@@ -26,7 +26,7 @@ const int MIN_VAL = 1;
 
 // maximum size of values to be benchmarked
 // If n = INIT_CACHE_SIZE, then should have something like MAX_VAL < 2^n
-const int MAX_VAL = pow(2, 20);
+const int MAX_VAL = pow(2, INIT_CACHE_SIZE);
 
 // polynomial modulus degree to be kept consistent between pure CKKS and Rache
 const size_t POLY_MODULUS_DEGREE = 32768;
