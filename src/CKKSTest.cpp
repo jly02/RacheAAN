@@ -26,7 +26,7 @@ const int MIN_VAL = 1;
 
 // maximum size of values to be benchmarked
 // If n = INIT_CACHE_SIZE, then should have something like MAX_VAL < 2^n
-const int MAX_VAL = pow(2, INIT_CACHE_SIZE);
+const int MAX_VAL = pow(2, INIT_CACHE_SIZE) - 1;
 
 // polynomial modulus degree to be kept consistent between pure CKKS and Rache
 const size_t POLY_MODULUS_DEGREE = 32768;
